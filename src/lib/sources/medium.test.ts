@@ -1,0 +1,61 @@
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { fetchMedium } from './medium'
+
+const SAMPLE_RSS = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Abdur Rakib - Medium</title>
+    <item>
+      <title>Enforcing Coverage Thresholds in GitLab CI</title>
+      <link>https://medium.com/@abdur-rakib/enforcing-coverage-thresholds-abc123</link>
+      <guid>https://medium.com/p/abc123</guid>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
+      <category>ci</category>
+      <category>jest</category>
+      <description>Failing the pipeline when tests slip below the line.</description>
+      <content:encoded><![CDATA[<p>${'Full article body. '.repeat(40)}</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>`
+
+describe('fetchMedium', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.unstubAllGlobals()
+  })
+
+  it('returns an empty array when MEDIUM_USERNAME is unset', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '')
+    const result = await fetchMedium()
+    expect(result).toEqual([])
+  })
+
+  it('parses RSS items into normalized Post objects', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(SAMPLE_RSS, { status: 200 })))
+
+    const result = await fetchMedium()
+
+    expect(result).toHaveLength(1)
+    expect(result[0]).toMatchObject({
+      id: 'medium-enforcing-coverage-thresholds-abc123',
+      title: 'Enforcing Coverage Thresholds in GitLab CI',
+      slug: 'enforcing-coverage-thresholds-abc123',
+      excerpt: 'Failing the pipeline when tests slip below the line.',
+      contentFormat: 'html',
+      tags: ['ci', 'jest'],
+      source: 'medium',
+      alsoOn: [],
+      originalUrl: 'https://medium.com/@abdur-rakib/enforcing-coverage-thresholds-abc123',
+      isPaywalled: false,
+    })
+    expect(result[0].publishedAt).toBe(new Date('Wed, 04 Mar 2026 00:00:00 GMT').toISOString())
+  })
+
+  it('throws when the feed fetch fails', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 404 })))
+
+    await expect(fetchMedium()).rejects.toThrow('Medium feed fetch failed: 404')
+  })
+})
