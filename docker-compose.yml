@@ -2,7 +2,8 @@ services:
   web:
     build:
       context: .
-      dockerfile: docker/Dockerfile.dev
+      dockerfile: docker/Dockerfile
+      target: dev
     ports:
       - "3000:3000"
     volumes:
@@ -13,4 +14,17 @@ services:
       - NODE_ENV=development
     env_file:
       - .env.local
-    command: pnpm dev
+
+  web-prod:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: runner
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env.local
+    profiles:
+      - prod

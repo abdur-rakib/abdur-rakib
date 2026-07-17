@@ -13,9 +13,16 @@ cp .env.example .env.local   # fill in the values, see "Environment variables" b
 docker compose up
 ```
 
-This builds the dev container from `docker/Dockerfile.dev` and runs `pnpm dev` inside it, with the
-repo mounted as a volume so edits on the host hot-reload. The site is available at
+`docker/Dockerfile` is a single multi-stage file (`dev` / `build` / `runner` stages); `docker-compose.yml`
+picks which one runs. The default `web` service builds the `dev` stage and runs `pnpm dev` with the repo
+mounted as a volume so edits on the host hot-reload. The site is available at
 [http://localhost:3000](http://localhost:3000).
+
+To run the production image locally instead (build stage → minimal standalone runner, no hot reload):
+
+```bash
+docker compose --profile prod up web-prod
+```
 
 ### Option B: Plain Node/pnpm
 
