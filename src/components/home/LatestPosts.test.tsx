@@ -6,7 +6,7 @@ import type { Post } from '@/lib/types'
 function makePost(id: string, title: string, publishedAt: string): Post {
   return {
     id, title, slug: id, excerpt: '', content: '', contentFormat: 'markdown', coverImage: null,
-    publishedAt, tags: [], source: 'devto', alsoOn: [], originalUrl: 'https://dev.to/x', isPaywalled: false,
+    publishedAt, tags: [], source: 'hashnode', alsoOn: [], originalUrl: 'https://hashnode.dev/x', isPaywalled: false,
   }
 }
 

@@ -4,7 +4,6 @@ import { SourceBadge } from './SourceBadge'
 
 describe('SourceBadge', () => {
   it.each([
-    ['devto', 'dev.to'],
     ['hashnode', 'hashnode'],
     ['medium', 'medium'],
   ] as const)('renders the label for %s', (source, label) => {

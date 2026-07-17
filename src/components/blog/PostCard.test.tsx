@@ -4,7 +4,7 @@ import { PostCard } from './PostCard'
 import type { Post } from '@/lib/types'
 
 const post: Post = {
-  id: 'devto-kong-plugins',
+  id: 'medium-kong-plugins',
   title: 'Custom Kong Plugins to Block Unauthorized API Traffic',
   slug: 'kong-plugins',
   excerpt: 'A verification layer that cut fraudulent requests by 90%.',
@@ -13,9 +13,9 @@ const post: Post = {
   coverImage: null,
   publishedAt: '2026-05-01T00:00:00.000Z',
   tags: ['kong', 'security', 'api-gateway', 'devops'],
-  source: 'devto',
+  source: 'medium',
   alsoOn: ['hashnode'],
-  originalUrl: 'https://dev.to/abdur-rakib/kong-plugins',
+  originalUrl: 'https://medium.com/@abdur-rakib/kong-plugins',
   isPaywalled: false,
 }
 
@@ -36,7 +36,7 @@ describe('PostCard', () => {
 
   it('renders a badge for the primary source and each alsoOn source', () => {
     render(<PostCard post={post} />)
-    expect(screen.getByText('dev.to')).toBeTruthy()
+    expect(screen.getByText('medium')).toBeTruthy()
     expect(screen.getByText('hashnode')).toBeTruthy()
   })
 

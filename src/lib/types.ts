@@ -1,4 +1,4 @@
-export type PostSource = 'devto' | 'hashnode' | 'medium'
+export type PostSource = 'hashnode' | 'medium'
 
 export interface Post {
   id: string

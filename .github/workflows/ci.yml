@@ -33,7 +33,6 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          DEVTO_USERNAME: ${{ secrets.DEVTO_USERNAME }}
           HASHNODE_HOST: ${{ secrets.HASHNODE_HOST }}
           MEDIUM_USERNAME: ${{ secrets.MEDIUM_USERNAME }}
           REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}

@@ -1,13 +1,11 @@
 import type { PostSource } from '@/lib/types'
 
 const LABELS: Record<PostSource, string> = {
-  devto: 'dev.to',
   hashnode: 'hashnode',
   medium: 'medium',
 }
 
 const COLORS: Record<PostSource, string> = {
-  devto: 'bg-devto-bg text-devto',
   medium: 'bg-medium-bg text-medium',
   hashnode: 'bg-hashnode-bg text-hashnode',
 }

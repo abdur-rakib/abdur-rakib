@@ -1,7 +1,7 @@
 # Portfolio Site
 
 A personal portfolio built with Next.js. It has three sections: a **Home** page, a **Blog** page that
-aggregates posts from dev.to, Hashnode, and Medium into a single filterable feed, and a **Resume** page
+aggregates posts from Hashnode and Medium into a single filterable feed, and a **Resume** page
 that embeds a local PDF (`public/resume.pdf`), with a download link alongside it.
 
 ## Local development
@@ -40,7 +40,6 @@ Copy `.env.example` to `.env.local` and fill these in:
 
 | Variable               | Purpose                                                                 |
 | ----------------------- | ------------------------------------------------------------------------ |
-| `DEVTO_USERNAME`       | dev.to username to pull blog posts from.                                |
 | `HASHNODE_HOST`        | Hashnode publication host (e.g. `yourname.hashnode.dev`) to pull posts from. |
 | `MEDIUM_USERNAME`      | Medium username to pull posts from.                                     |
 | `REVALIDATE_SECRET`    | Shared secret checked against the `x-revalidate-secret` header on `POST /api/revalidate`, used by blog platform webhooks to trigger on-demand ISR revalidation. |
@@ -57,7 +56,7 @@ pnpm lint       # eslint
 
 ## One-time manual setup
 
-These steps require access to accounts (dev.to, Hashnode, GitHub, Vercel) that no agent has, so
+These steps require access to accounts (Hashnode, GitHub, Vercel) that no agent has, so
 they need to be done by hand, once, by the site owner.
 
 ### 1. Resume PDF
@@ -75,9 +74,6 @@ Without webhooks, new posts still appear automatically, just up to the ISR reval
 
 Once the site is deployed and `REVALIDATE_SECRET` is set in the Vercel environment:
 
-- **dev.to**: Settings → Extensions → Webhooks → add a webhook for event `article_updated`
-  pointing at `https://<your-domain>/api/revalidate`, with header
-  `x-revalidate-secret: <REVALIDATE_SECRET>`.
 - **Hashnode**: Publication → Webhooks → add a webhook for events `post_published` and
   `post_updated` pointing at the same URL and header.
 
@@ -94,10 +90,10 @@ deploys to Vercel on push to `main`. Both need secrets configured once:
 3. In GitHub: **Settings → Secrets and variables → Actions**, add these repo secrets:
    - `VERCEL_TOKEN` — from vercel.com → Account Settings → Tokens.
    - `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` — from `.vercel/project.json`.
-   - `DEVTO_USERNAME`, `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
+   - `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
      `NEXT_PUBLIC_SITE_URL` — same values as in `.env.local`.
-4. In Vercel: **Project → Settings → Environment Variables**, add the same five app env vars
-   (`DEVTO_USERNAME`, `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
+4. In Vercel: **Project → Settings → Environment Variables**, add the same four app env vars
+   (`HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
    `NEXT_PUBLIC_SITE_URL`) for the **Production** environment.
 
 ## Further reading

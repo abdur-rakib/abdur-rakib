@@ -31,11 +31,3 @@ export function HashnodeIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
-
-export function DevtoIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M7.8 8.6H4.4A.42.42 0 0 0 4 9v6a.42.42 0 0 0 .4.4h3.4c1.9 0 3.2-1.5 3.2-3.4S9.7 8.6 7.8 8.6zm.1 5.2H5.6v-3.6h2.3c.9 0 1.4.9 1.4 1.8s-.5 1.8-1.4 1.8zM17.9 8.4c-2.1 0-3.5 1.7-3.5 3.6s1.4 3.6 3.5 3.6S21.5 14 21.5 12s-1.5-3.6-3.6-3.6zm0 5.5c-1 0-1.5-1-1.5-1.9s.5-1.9 1.5-1.9 1.6 1 1.6 1.9-.6 1.9-1.6 1.9zM13.9 8.6h-1.7v6.8h1.7V8.6z" />
-    </svg>
-  )
-}

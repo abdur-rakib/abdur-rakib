@@ -6,15 +6,15 @@ import type { Post } from '@/lib/types'
 
 function makePost(overrides: Partial<Post>): Post {
   return {
-    id: 'devto-a', title: 'A', slug: 'a', excerpt: 'excerpt a', content: 'word '.repeat(200),
+    id: 'hashnode-a', title: 'A', slug: 'a', excerpt: 'excerpt a', content: 'word '.repeat(200),
     contentFormat: 'markdown', coverImage: null, publishedAt: '2026-01-01T00:00:00.000Z',
-    tags: [], source: 'devto', alsoOn: [], originalUrl: 'https://dev.to/a', isPaywalled: false,
+    tags: [], source: 'hashnode', alsoOn: [], originalUrl: 'https://hashnode.dev/a', isPaywalled: false,
     ...overrides,
   }
 }
 
 const posts: Post[] = [
-  makePost({ id: 'devto-a', title: 'Rate Limiting at the Gateway', source: 'devto', tags: ['api-gateway'] }),
+  makePost({ id: 'hashnode-a', title: 'Rate Limiting at the Gateway', source: 'hashnode', tags: ['api-gateway'] }),
   makePost({ id: 'medium-b', title: 'Auto-Recharge Engine', source: 'medium', tags: ['nestjs'], publishedAt: '2026-02-01T00:00:00.000Z' }),
 ]
 

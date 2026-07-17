@@ -4,7 +4,7 @@ import type { Post } from './types'
 
 function makePost(overrides: Partial<Post>): Post {
   return {
-    id: 'devto-test',
+    id: 'hashnode-test',
     title: 'Test Post',
     slug: 'test-post',
     excerpt: 'excerpt',
@@ -13,9 +13,9 @@ function makePost(overrides: Partial<Post>): Post {
     coverImage: null,
     publishedAt: '2026-01-01T00:00:00.000Z',
     tags: [],
-    source: 'devto',
+    source: 'hashnode',
     alsoOn: [],
-    originalUrl: 'https://dev.to/test-post',
+    originalUrl: 'https://hashnode.dev/test-post',
     isPaywalled: false,
     ...overrides,
   }
@@ -40,22 +40,22 @@ describe('dedupeAndSort', () => {
         publishedAt: '2026-03-05T00:00:00.000Z',
       }),
       makePost({
-        id: 'devto-1',
+        id: 'hashnode-1',
         title: 'Designing an Auto-Recharge Engine',
-        source: 'devto',
+        source: 'hashnode',
         publishedAt: '2026-03-01T00:00:00.000Z',
       }),
     ]
     const result = dedupeAndSort(posts)
     expect(result).toHaveLength(1)
-    expect(result[0].source).toBe('devto')
+    expect(result[0].source).toBe('hashnode')
     expect(result[0].publishedAt).toBe('2026-03-01T00:00:00.000Z')
     expect(result[0].alsoOn).toEqual(['medium'])
   })
 
   it('title match is case- and punctuation-insensitive', () => {
     const posts = [
-      makePost({ id: 'a', title: 'Rate Limiting at the Gateway!', source: 'devto', publishedAt: '2026-01-01T00:00:00.000Z' }),
+      makePost({ id: 'a', title: 'Rate Limiting at the Gateway!', source: 'medium', publishedAt: '2026-01-01T00:00:00.000Z' }),
       makePost({ id: 'b', title: 'rate limiting at the gateway', source: 'hashnode', publishedAt: '2026-01-02T00:00:00.000Z' }),
     ]
     const result = dedupeAndSort(posts)

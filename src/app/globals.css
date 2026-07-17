@@ -12,8 +12,6 @@
   --color-panel-2: var(--panel-2);
   --color-border-strong: var(--border-strong);
   --color-muted-2: var(--muted-2);
-  --color-devto: var(--devto);
-  --color-devto-bg: var(--devto-bg);
   --color-medium: var(--medium);
   --color-medium-bg: var(--medium-bg);
   --color-hashnode: var(--hashnode);
@@ -82,8 +80,6 @@
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #a5b4fc;
-  --devto: #0a0a0a;
-  --devto-bg: #ececec;
   --medium: #1a1a1a;
   --medium-bg: #eaeae6;
   --hashnode: #2962ff;
@@ -128,8 +124,6 @@
     --border: #27272a;
     --input: #27272a;
     --ring: #4f46e5;
-    --devto: #fafafa;
-    --devto-bg: #27272a;
     --medium: #e4e4e7;
     --medium-bg: #232320;
     --hashnode: #93b0ff;
@@ -173,8 +167,6 @@
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #a5b4fc;
-  --devto: #0a0a0a;
-  --devto-bg: #ececec;
   --medium: #1a1a1a;
   --medium-bg: #eaeae6;
   --hashnode: #2962ff;
@@ -217,8 +209,6 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #4f46e5;
-  --devto: #fafafa;
-  --devto-bg: #27272a;
   --medium: #e4e4e7;
   --medium-bg: #232320;
   --hashnode: #93b0ff;
@@ -261,8 +251,6 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #4f46e5;
-  --devto: #fafafa;
-  --devto-bg: #27272a;
   --medium: #e4e4e7;
   --medium-bg: #232320;
   --hashnode: #93b0ff;
