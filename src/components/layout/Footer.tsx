@@ -1,4 +1,5 @@
 import { site } from '@/config/site'
+import { GithubIcon, LinkedinIcon, MediumIcon } from '@/components/icons/BrandIcons'
 
 export function Footer() {
   return (
@@ -7,15 +8,15 @@ export function Footer() {
         <span className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} {site.name}
         </span>
-        <div className="flex gap-4">
-          <a href={site.socials.github} className="text-sm text-muted-foreground hover:text-foreground">
-            GitHub
+        <div className="flex gap-3.5">
+          <a href={site.socials.github} aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
+            <GithubIcon className="size-[18px]" />
           </a>
-          <a href={site.socials.linkedin} className="text-sm text-muted-foreground hover:text-foreground">
-            LinkedIn
+          <a href={site.socials.linkedin} aria-label="LinkedIn" className="text-muted-foreground hover:text-foreground">
+            <LinkedinIcon className="size-[18px]" />
           </a>
-          <a href={site.socials.medium} className="text-sm text-muted-foreground hover:text-foreground">
-            Medium
+          <a href={site.socials.medium} aria-label="Medium" className="text-muted-foreground hover:text-foreground">
+            <MediumIcon className="size-[18px]" />
           </a>
         </div>
       </div>

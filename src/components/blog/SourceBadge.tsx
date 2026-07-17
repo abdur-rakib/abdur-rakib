@@ -6,9 +6,17 @@ const LABELS: Record<PostSource, string> = {
   medium: 'medium',
 }
 
+const COLORS: Record<PostSource, string> = {
+  devto: 'bg-devto-bg text-devto',
+  medium: 'bg-medium-bg text-medium',
+  hashnode: 'bg-hashnode-bg text-hashnode',
+}
+
 export function SourceBadge({ source }: { source: PostSource }) {
   return (
-    <span className="rounded-md bg-panel-2 px-1.5 py-0.5 font-mono text-[10.5px] font-semibold lowercase text-foreground">
+    <span
+      className={`rounded-md px-1.5 py-0.5 font-mono text-[10.5px] font-semibold lowercase ${COLORS[source]}`}
+    >
       {LABELS[source]}
     </span>
   )
