@@ -16,7 +16,7 @@ export default async function BlogPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Blog</h1>
-        <p className="mt-2 max-w-[56ch] text-muted">
+        <p className="mt-2 max-w-[56ch] text-muted-foreground">
           Every post I publish, pulled from all three platforms into one feed.
           Cross-posts are de-duplicated; each post links back to its original.
         </p>

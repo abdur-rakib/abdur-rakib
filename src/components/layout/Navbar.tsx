@@ -33,7 +33,7 @@ export function Navbar() {
                 className={
                   active
                     ? 'rounded-lg bg-panel-2 px-3 py-1.5 text-sm font-medium text-foreground'
-                    : 'rounded-lg px-3 py-1.5 text-sm text-muted hover:text-foreground'
+                    : 'rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground'
                 }
               >
                 {item.label}

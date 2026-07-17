@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Site
 
-## Getting Started
+A personal portfolio built with Next.js. It has three sections: a **Home** page, a **Blog** page that
+aggregates posts from dev.to, Hashnode, and Medium into a single filterable feed, and a **Resume** page
+that embeds a résumé PDF hosted on Google Drive.
 
-First, run the development server:
+## Local development
+
+### Option A: Docker (recommended)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # fill in the values, see "Environment variables" below
+docker compose up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This builds the dev container from `docker/Dockerfile.dev` and runs `pnpm dev` inside it, with the
+repo mounted as a volume so edits on the host hot-reload. The site is available at
+[http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Option B: Plain Node/pnpm
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp .env.example .env.local   # fill in the values, see "Environment variables" below
+pnpm install
+pnpm dev
+```
 
-## Learn More
+Requires Node 22 and pnpm 9 (see `.github/workflows/ci.yml` for the exact versions CI uses).
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Copy `.env.example` to `.env.local` and fill these in:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable               | Purpose                                                                 |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `DEVTO_USERNAME`       | dev.to username to pull blog posts from.                                |
+| `HASHNODE_HOST`        | Hashnode publication host (e.g. `yourname.hashnode.dev`) to pull posts from. |
+| `MEDIUM_USERNAME`      | Medium username to pull posts from.                                     |
+| `REVALIDATE_SECRET`    | Shared secret checked against the `x-revalidate-secret` header on `POST /api/revalidate`, used by blog platform webhooks to trigger on-demand ISR revalidation. |
+| `NEXT_PUBLIC_SITE_URL` | Canonical public URL of the deployed site (used for metadata, sitemap, RSS, etc.). |
 
-## Deploy on Vercel
+## Test / build commands
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm test       # run the vitest suite
+pnpm build      # production build
+pnpm typecheck  # tsc --noEmit
+pnpm lint       # eslint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## One-time manual setup
+
+These steps require access to accounts (Google Drive, dev.to, Hashnode, GitHub, Vercel) that no
+agent has, so they need to be done by hand, once, by the site owner.
+
+### 1. Résumé PDF (Google Drive)
+
+The Resume page embeds a PDF hosted on Google Drive rather than shipping the file in the repo.
+
+1. Upload your résumé PDF to Google Drive.
+2. Share it: **Anyone with the link — Viewer**.
+3. Copy the file ID out of the share URL — it's the segment between `/d/` and `/view` in
+   `https://drive.google.com/file/d/<FILE_ID>/view`.
+4. Paste that ID into `resumeDriveFileId` in `src/config/site.ts`, replacing the placeholder
+   `'REPLACE_WITH_GOOGLE_DRIVE_FILE_ID'`.
+
+### 2. Blog platform webhooks (instant revalidation)
+
+Without webhooks, new posts still appear automatically, just up to the ISR revalidation window
+(6 hours) later. Wiring up webhooks makes new posts show up within seconds of publishing.
+
+Once the site is deployed and `REVALIDATE_SECRET` is set in the Vercel environment:
+
+- **dev.to**: Settings → Extensions → Webhooks → add a webhook for event `article_updated`
+  pointing at `https://<your-domain>/api/revalidate`, with header
+  `x-revalidate-secret: <REVALIDATE_SECRET>`.
+- **Hashnode**: Publication → Webhooks → add a webhook for events `post_published` and
+  `post_updated` pointing at the same URL and header.
+
+(Medium has no webhook support, so Medium posts always rely on the ISR window.)
+
+### 3. GitHub Actions + Vercel deploy wiring
+
+`.github/workflows/ci.yml` runs typecheck/lint/test/build on every PR. `.github/workflows/deploy.yml`
+deploys to Vercel on push to `main`. Both need secrets configured once:
+
+1. Push this repo to a GitHub remote (if not already).
+2. Locally, run `vercel link` to connect the repo to a Vercel project — this creates
+   `.vercel/project.json` containing `orgId` and `projectId`.
+3. In GitHub: **Settings → Secrets and variables → Actions**, add these repo secrets:
+   - `VERCEL_TOKEN` — from vercel.com → Account Settings → Tokens.
+   - `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` — from `.vercel/project.json`.
+   - `DEVTO_USERNAME`, `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
+     `NEXT_PUBLIC_SITE_URL` — same values as in `.env.local`.
+4. In Vercel: **Project → Settings → Environment Variables**, add the same five app env vars
+   (`DEVTO_USERNAME`, `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
+   `NEXT_PUBLIC_SITE_URL`) for the **Production** environment.
+
+## Further reading
+
+- Design spec: `docs/superpowers/specs/2026-07-16-portfolio-site-design.md`
+- Implementation plan: `docs/superpowers/plans/2026-07-16-portfolio-site-implementation.md`

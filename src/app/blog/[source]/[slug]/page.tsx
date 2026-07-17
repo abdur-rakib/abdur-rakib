@@ -41,7 +41,7 @@ export default async function PostPage({ params }: { params: Promise<PageParams>
 
   return (
     <article className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         <SourceBadge source={post.source} />
         {post.alsoOn.map((s) => (
           <SourceBadge key={s} source={s} />
@@ -57,7 +57,7 @@ export default async function PostPage({ params }: { params: Promise<PageParams>
       <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
       {post.isPaywalled ? (
         <div className="flex flex-col gap-4">
-          <p className="text-muted">{post.excerpt}</p>
+          <p className="text-muted-foreground">{post.excerpt}</p>
           <a
             href={post.originalUrl}
             className="w-fit rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"

@@ -27,7 +27,7 @@ export function BlogExplorer({ posts }: { posts: Post[] }) {
       <SourceFilter value={source} onChange={setSource} />
       <TagFilter tags={tags} value={tag} onChange={setTag} />
       {filtered.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted">No posts match these filters.</p>
+        <p className="py-12 text-center text-sm text-muted-foreground">No posts match these filters.</p>
       ) : (
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((post) => (

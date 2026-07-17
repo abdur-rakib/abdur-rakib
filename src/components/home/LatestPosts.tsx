@@ -14,7 +14,7 @@ export function LatestPosts({ posts }: { posts: Post[] }) {
         </Link>
       </div>
       {latest.length === 0 ? (
-        <p className="text-sm text-muted">No posts yet — check back soon.</p>
+        <p className="text-sm text-muted-foreground">No posts yet — check back soon.</p>
       ) : (
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {latest.map((post) => (

@@ -18,7 +18,7 @@ export function Hero() {
           <span>{site.location}</span>
         </div>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{site.name}</h1>
-        <p className="mt-3 text-lg text-muted">{site.role}</p>
+        <p className="mt-3 text-lg text-muted-foreground">{site.role}</p>
       </div>
       <p className="max-w-[60ch] text-base leading-relaxed">{site.bio}</p>
       <div className="flex flex-wrap gap-2.5">
@@ -40,14 +40,14 @@ export function Hero() {
           <a
             key={key}
             href={site.socials[key]}
-            className="rounded-full border border-border bg-panel px-3 py-1.5 text-sm text-muted hover:text-foreground"
+            className="rounded-full border border-border bg-panel px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
           >
             {SOCIAL_LABELS[key]}
           </a>
         ))}
         <a
           href={`mailto:${site.email}`}
-          className="rounded-full border border-border bg-panel px-3 py-1.5 text-sm text-muted hover:text-foreground"
+          className="rounded-full border border-border bg-panel px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
           Email
         </a>

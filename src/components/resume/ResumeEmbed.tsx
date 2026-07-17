@@ -9,7 +9,7 @@ export function ResumeEmbed() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Résumé</h1>
-          <p className="mt-1 text-muted">{site.role}</p>
+          <p className="mt-1 text-muted-foreground">{site.role}</p>
         </div>
         <a
           href={downloadUrl}
