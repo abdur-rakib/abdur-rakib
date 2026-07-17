@@ -3,8 +3,8 @@ import { site } from '@/config/site'
 
 export function ResumeEmbed() {
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-wrap items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
           <p className="mt-1 text-muted-foreground">{site.role}</p>
@@ -18,13 +18,12 @@ export function ResumeEmbed() {
           Download PDF
         </a>
       </div>
-      <div className="p-3">
-        <iframe
-          src="/resume.pdf#toolbar=0&navpanes=0"
-          title={`${site.name} resume`}
-          className="min-h-[80vh] w-full"
-        />
-      </div>
+      <hr className="border-border" />
+      <iframe
+        src="/resume.pdf#toolbar=0&navpanes=0"
+        title={`${site.name} resume`}
+        className="min-h-[80vh] w-full rounded-xl border border-border"
+      />
     </div>
   )
 }
