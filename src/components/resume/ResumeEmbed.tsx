@@ -4,7 +4,7 @@ import { site } from '@/config/site'
 export function ResumeEmbed() {
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Resume</h1>
           <p className="mt-1 text-muted-foreground">{site.role}</p>
