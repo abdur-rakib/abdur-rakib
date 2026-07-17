@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { Post } from '@/lib/types'
 import { SourceBadge } from './SourceBadge'
 
@@ -13,8 +12,10 @@ function readingTime(content: string) {
 
 export function PostCard({ post }: { post: Post }) {
   return (
-    <Link
-      href={`/blog/${post.source}/${post.slug}`}
+    <a
+      href={post.originalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       className="flex flex-col gap-2.5 rounded-xl border border-border bg-panel p-4.5 transition hover:-translate-y-0.5 hover:border-border-strong"
     >
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -37,6 +38,6 @@ export function PostCard({ post }: { post: Post }) {
           </span>
         ))}
       </div>
-    </Link>
+    </a>
   )
 }

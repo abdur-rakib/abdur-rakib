@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { ResumeEmbed } from '@/components/resume/ResumeEmbed'
 
 export const metadata: Metadata = {
-  title: 'Résumé — Abdur Rakib',
-  description: 'Download or preview my résumé.',
+  title: 'Resume — Abdur Rakib',
+  description: 'Download or preview my resume.',
 }
 
 export default function ResumePage() {

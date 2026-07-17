@@ -18,7 +18,9 @@ vi.mock('./sources/hashnode', () => ({
     throw new Error('hashnode is down')
   }),
 }))
-vi.mock('./sources/medium', () => ({ fetchMedium: vi.fn(async () => [hashnodePost]) }))
+vi.mock('./sources/medium', () => ({
+  fetchMedium: vi.fn(async () => [hashnodePost, undefined] as Post[]),
+}))
 
 describe('combinePosts', () => {
   it('merges posts from sources that succeed and ignores sources that fail', async () => {

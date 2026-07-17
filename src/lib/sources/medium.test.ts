@@ -52,6 +52,30 @@ describe('fetchMedium', () => {
     expect(result[0].publishedAt).toBe(new Date('Wed, 04 Mar 2026 00:00:00 GMT').toISOString())
   })
 
+  it('builds an excerpt from content when description is missing, without gluing words across tags', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
+    const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Abdur Rakib - Medium</title>
+    <item>
+      <title>React Interview Questions</title>
+      <link>https://medium.com/@abdur-rakib/react-interview-questions-def456</link>
+      <guid>https://medium.com/p/def456</guid>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
+      <content:encoded><![CDATA[<figcaption>Photo by Lautaro Andreani on Unsplash</figcaption><p>${'Welcome to my new interview questions episode. '.repeat(10)}</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>`
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss, { status: 200 })))
+
+    const result = await fetchMedium()
+
+    expect(result[0].excerpt).not.toMatch(/UnsplashWelcome/)
+    expect(result[0].excerpt).toMatch(/^Photo by Lautaro Andreani on Unsplash Welcome to my new/)
+    expect(result[0].excerpt.length).toBeLessThanOrEqual(161)
+  })
+
   it('throws when the feed fetch fails', async () => {
     vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
     vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 404 })))

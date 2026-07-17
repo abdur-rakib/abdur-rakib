@@ -31,6 +31,17 @@ export async function fetchMedium(): Promise<Post[]> {
   return items.map(toPost)
 }
 
+function excerptFromHtml(html: string, maxLength = 160): string {
+  const text = html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (text.length <= maxLength) return text
+  const truncated = text.slice(0, maxLength)
+  const lastSpace = truncated.lastIndexOf(' ')
+  return `${truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength)}…`
+}
+
 function toPost(item: MediumItem): Post {
   const { html, isPaywalled } = sanitizeMediumContent(item['content:encoded'])
   const tags = ([] as string[]).concat(item.category ?? [])
@@ -40,7 +51,7 @@ function toPost(item: MediumItem): Post {
     id: `medium-${slug}`,
     title: item.title,
     slug,
-    excerpt: item.description ?? html.replace(/<[^>]+>/g, '').slice(0, 160),
+    excerpt: item.description ?? excerptFromHtml(html),
     content: html,
     contentFormat: 'html',
     coverImage: null,

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # claude code
 .claude
+
+# résumé PDF (personal file, deployed manually — see README)
+/public/resume.pdf

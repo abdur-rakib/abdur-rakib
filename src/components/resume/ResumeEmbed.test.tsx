@@ -4,19 +4,15 @@ import { ResumeEmbed } from './ResumeEmbed'
 import { site } from '@/config/site'
 
 describe('ResumeEmbed', () => {
-  it('embeds the Drive preview iframe for the configured file id', () => {
+  it('embeds the local resume PDF', () => {
     render(<ResumeEmbed />)
-    const iframe = screen.getByTitle(`${site.name} résumé`)
-    expect(iframe.getAttribute('src')).toBe(
-      `https://drive.google.com/file/d/${site.resumeDriveFileId}/preview`
-    )
+    const iframe = screen.getByTitle(`${site.name} resume`)
+    expect(iframe.getAttribute('src')).toBe('/resume.pdf')
   })
 
-  it('links the download button to the Drive export URL', () => {
+  it('links the download button to the local resume PDF', () => {
     render(<ResumeEmbed />)
     const link = screen.getByRole('link', { name: /download pdf/i })
-    expect(link.getAttribute('href')).toBe(
-      `https://drive.google.com/uc?export=download&id=${site.resumeDriveFileId}`
-    )
+    expect(link.getAttribute('href')).toBe('/resume.pdf')
   })
 })

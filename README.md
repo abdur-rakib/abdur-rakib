@@ -2,7 +2,7 @@
 
 A personal portfolio built with Next.js. It has three sections: a **Home** page, a **Blog** page that
 aggregates posts from dev.to, Hashnode, and Medium into a single filterable feed, and a **Resume** page
-that embeds a résumé PDF hosted on Google Drive.
+that embeds a local PDF (`public/resume.pdf`), with a download link alongside it.
 
 ## Local development
 
@@ -57,19 +57,16 @@ pnpm lint       # eslint
 
 ## One-time manual setup
 
-These steps require access to accounts (Google Drive, dev.to, Hashnode, GitHub, Vercel) that no
-agent has, so they need to be done by hand, once, by the site owner.
+These steps require access to accounts (dev.to, Hashnode, GitHub, Vercel) that no agent has, so
+they need to be done by hand, once, by the site owner.
 
-### 1. Résumé PDF (Google Drive)
+### 1. Resume PDF
 
-The Resume page embeds a PDF hosted on Google Drive rather than shipping the file in the repo.
+The Resume page embeds and links to `public/resume.pdf`, which is gitignored (large binary, keep
+it out of the repo).
 
-1. Upload your résumé PDF to Google Drive.
-2. Share it: **Anyone with the link — Viewer**.
-3. Copy the file ID out of the share URL — it's the segment between `/d/` and `/view` in
-   `https://drive.google.com/file/d/<FILE_ID>/view`.
-4. Paste that ID into `resumeDriveFileId` in `src/config/site.ts`, replacing the placeholder
-   `'REPLACE_WITH_GOOGLE_DRIVE_FILE_ID'`.
+1. Export/save your resume as a PDF.
+2. Drop it in `public/resume.pdf`.
 
 ### 2. Blog platform webhooks (instant revalidation)
 

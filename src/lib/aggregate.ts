@@ -11,6 +11,7 @@ export async function combinePosts(): Promise<Post[]> {
   const posts = results
     .filter((r): r is PromiseFulfilledResult<Post[]> => r.status === 'fulfilled')
     .flatMap((r) => r.value)
+    .filter((post): post is Post => Boolean(post))
 
   return dedupeAndSort(posts)
 }

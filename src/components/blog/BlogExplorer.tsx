@@ -8,7 +8,17 @@ import { TagFilter } from './TagFilter'
 export function BlogExplorer({ posts }: { posts: Post[] }) {
   const [tag, setTag] = useState('all')
 
-  const tags = useMemo(() => Array.from(new Set(posts.flatMap((p) => p.tags))).sort(), [posts])
+  const tags = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const post of posts) {
+      for (const tag of post.tags) {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1)
+      }
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([tag]) => tag)
+  }, [posts])
 
   const filtered = useMemo(
     () => posts.filter((post) => tag === 'all' || post.tags.includes(tag)),

@@ -20,10 +20,12 @@ const post: Post = {
 }
 
 describe('PostCard', () => {
-  it('links to the internal post route', () => {
+  it('links to the original post in a new tab', () => {
     render(<PostCard post={post} />)
     const link = screen.getByRole('link')
-    expect(link.getAttribute('href')).toBe('/blog/devto/kong-plugins')
+    expect(link.getAttribute('href')).toBe(post.originalUrl)
+    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
   })
 
   it('renders the title and excerpt', () => {

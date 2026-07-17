@@ -11,7 +11,6 @@ export interface SiteConfig {
     devto: string
     hashnode: string
   }
-  resumeDriveFileId: string
 }
 
 export const site: SiteConfig = {
@@ -27,7 +26,4 @@ export const site: SiteConfig = {
     devto: 'https://dev.to/abdur-rakib',
     hashnode: 'https://abdur-rakib.hashnode.dev',
   },
-  // Replace with the real Google Drive file ID once the résumé PDF is
-  // uploaded and shared as "Anyone with the link — Viewer" (see Task 18).
-  resumeDriveFileId: 'REPLACE_WITH_GOOGLE_DRIVE_FILE_ID',
 }

@@ -1,5 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+
+const VISIBLE_LIMIT = 5
+
 export function TagFilter({
   tags,
   value,
@@ -9,6 +13,10 @@ export function TagFilter({
   value: string
   onChange: (value: string) => void
 }) {
+  const [expanded, setExpanded] = useState(false)
+  const visibleTags = expanded ? tags : tags.slice(0, VISIBLE_LIMIT)
+  const hiddenCount = tags.length - visibleTags.length
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">Tag</span>
@@ -23,7 +31,7 @@ export function TagFilter({
       >
         All
       </button>
-      {tags.map((tag) => (
+      {visibleTags.map((tag) => (
         <button
           key={tag}
           type="button"
@@ -37,6 +45,24 @@ export function TagFilter({
           {tag}
         </button>
       ))}
+      {hiddenCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="rounded-full border border-dashed border-border px-3 py-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          +{hiddenCount} more
+        </button>
+      )}
+      {expanded && tags.length > VISIBLE_LIMIT && (
+        <button
+          type="button"
+          onClick={() => setExpanded(false)}
+          className="rounded-full border border-dashed border-border px-3 py-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          Show less
+        </button>
+      )}
     </div>
   )
 }
