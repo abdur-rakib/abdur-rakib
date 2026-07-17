@@ -79,22 +79,18 @@ Once the site is deployed and `REVALIDATE_SECRET` is set in the Vercel environme
 
 (Medium has no webhook support, so Medium posts always rely on the ISR window.)
 
-### 3. GitHub Actions + Vercel deploy wiring
+### 3. Deploy wiring
 
-`.github/workflows/ci.yml` runs typecheck/lint/test/build on every PR. `.github/workflows/deploy.yml`
-deploys to Vercel on push to `main`. Both need secrets configured once:
+`.github/workflows/ci.yml` runs typecheck/lint/test/build on every PR — it doesn't deploy anything.
+Deployment is handled by Vercel's native GitHub integration (connected via the Vercel dashboard or
+`vercel link`), which auto-builds and deploys on every push to `main`, independent of GitHub Actions.
 
 1. Push this repo to a GitHub remote (if not already).
-2. Locally, run `vercel link` to connect the repo to a Vercel project — this creates
-   `.vercel/project.json` containing `orgId` and `projectId`.
-3. In GitHub: **Settings → Secrets and variables → Actions**, add these repo secrets:
-   - `VERCEL_TOKEN` — from vercel.com → Account Settings → Tokens.
-   - `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` — from `.vercel/project.json`.
-   - `HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
-     `NEXT_PUBLIC_SITE_URL` — same values as in `.env.local`.
-4. In Vercel: **Project → Settings → Environment Variables**, add the same four app env vars
-   (`HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`,
-   `NEXT_PUBLIC_SITE_URL`) for the **Production** environment.
+2. In Vercel: **Add New → Project**, import the GitHub repo. This connects Vercel's GitHub App,
+   which then deploys automatically on every push to `main` (and creates preview deploys for PRs).
+3. In Vercel: **Project → Settings → Environment Variables**, add the app env vars
+   (`HASHNODE_HOST`, `MEDIUM_USERNAME`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SITE_URL`) for the
+   **Production** environment.
 
 ## Further reading
 
