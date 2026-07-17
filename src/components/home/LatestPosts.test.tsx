@@ -5,7 +5,7 @@ import type { Post } from '@/lib/types'
 
 function makePost(id: string, title: string, publishedAt: string): Post {
   return {
-    id, title, slug: id, excerpt: '', content: '', contentFormat: 'markdown', coverImage: null,
+    id, title, slug: id, excerpt: '', content: '', contentFormat: 'markdown', readingMinutes: 1, coverImage: null,
     publishedAt, tags: [], source: 'hashnode', alsoOn: [], originalUrl: 'https://hashnode.dev/x', isPaywalled: false,
   }
 }

@@ -4,7 +4,7 @@ import type { Post } from '@/lib/types'
 
 const post: Post = {
   id: 'hashnode-a', title: 'Custom Kong Plugins', slug: 'a', excerpt: 'excerpt', content: 'body',
-  contentFormat: 'markdown', coverImage: null, publishedAt: '2026-05-01T00:00:00.000Z',
+  contentFormat: 'markdown', readingMinutes: 3, coverImage: null, publishedAt: '2026-05-01T00:00:00.000Z',
   tags: ['kong'], source: 'hashnode', alsoOn: [], originalUrl: 'https://hashnode.dev/a', isPaywalled: false,
 }
 

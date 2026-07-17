@@ -1,5 +1,6 @@
 import { XMLParser } from 'fast-xml-parser'
 import type { Post } from '../types'
+import { estimateReadingMinutes } from '../readingTime'
 import { sanitizeMediumContent } from './mediumSanitize'
 
 interface MediumItem {
@@ -54,6 +55,7 @@ function toPost(item: MediumItem): Post {
     excerpt: item.description ?? excerptFromHtml(html),
     content: html,
     contentFormat: 'html',
+    readingMinutes: estimateReadingMinutes(html, 'html'),
     coverImage: null,
     publishedAt: new Date(item.pubDate).toISOString(),
     tags,

@@ -5,11 +5,6 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
 }
 
-function readingTime(content: string) {
-  const words = content.trim().split(/\s+/).length
-  return Math.max(1, Math.round(words / 200))
-}
-
 export function PostCard({ post }: { post: Post }) {
   return (
     <a
@@ -24,7 +19,7 @@ export function PostCard({ post }: { post: Post }) {
           <SourceBadge key={source} source={source} />
         ))}
         <span>{formatDate(post.publishedAt)}</span>
-        <span>{readingTime(post.content)} min</span>
+        <span>{post.readingMinutes} min</span>
       </div>
       <h3 className="text-base font-semibold leading-snug">{post.title}</h3>
       <p className="text-sm text-muted-foreground">{post.excerpt}</p>

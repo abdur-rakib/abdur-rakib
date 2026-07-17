@@ -9,7 +9,13 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1, name: site.name })).toBeTruthy()
     expect(screen.getByText(site.role)).toBeTruthy()
     expect(screen.getByText(site.location)).toBeTruthy()
-    expect(screen.getByText(site.bio)).toBeTruthy()
+    expect(screen.getByText((_, el) => el?.textContent === site.bio)).toBeTruthy()
+  })
+
+  it('bolds bKash within the bio', () => {
+    render(<Hero />)
+    const strong = screen.getByText('bKash')
+    expect(strong.tagName).toBe('STRONG')
   })
 
   it('renders a CTA link to /blog', () => {

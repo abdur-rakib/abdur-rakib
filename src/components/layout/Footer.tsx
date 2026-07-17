@@ -9,13 +9,13 @@ export function Footer() {
           © {new Date().getFullYear()} {site.name}
         </span>
         <div className="flex gap-3.5">
-          <a href={site.socials.github} aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
+          <a href={site.socials.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-muted-foreground hover:text-foreground">
             <GithubIcon className="size-[18px]" />
           </a>
-          <a href={site.socials.linkedin} aria-label="LinkedIn" className="text-muted-foreground hover:text-foreground">
+          <a href={site.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-muted-foreground hover:text-foreground">
             <LinkedinIcon className="size-[18px]" />
           </a>
-          <a href={site.socials.medium} aria-label="Medium" className="text-muted-foreground hover:text-foreground">
+          <a href={site.socials.medium} target="_blank" rel="noopener noreferrer" aria-label="Medium" className="text-muted-foreground hover:text-foreground">
             <MediumIcon className="size-[18px]" />
           </a>
         </div>

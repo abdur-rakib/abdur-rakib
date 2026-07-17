@@ -10,6 +10,7 @@ function makePost(overrides: Partial<Post>): Post {
     excerpt: 'excerpt',
     content: 'content',
     contentFormat: 'markdown',
+    readingMinutes: 1,
     coverImage: null,
     publishedAt: '2026-01-01T00:00:00.000Z',
     tags: [],

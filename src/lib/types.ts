@@ -5,8 +5,10 @@ export interface Post {
   title: string
   slug: string
   excerpt: string
-  content: string
+  /** Full post body. Server-only — stripped before serializing to client components. */
+  content?: string
   contentFormat: 'markdown' | 'html'
+  readingMinutes: number
   coverImage: string | null
   publishedAt: string
   tags: string[]

@@ -19,7 +19,13 @@ export function Hero() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{site.name}</h1>
         <p className="mt-3 text-lg text-muted-foreground">{site.role}</p>
       </div>
-      <p className="max-w-[60ch] text-base leading-relaxed">{site.bio}</p>
+      <p className="max-w-[60ch] text-base leading-relaxed">
+        {site.bio.split('bKash').flatMap((part, i, arr) =>
+          i < arr.length - 1
+            ? [part, <strong key={i} className="font-semibold text-foreground">bKash</strong>]
+            : [part]
+        )}
+      </p>
       <div className="flex flex-wrap gap-2">
         {(Object.keys(SOCIALS) as (keyof typeof SOCIALS)[]).map((key) => {
           const { label, icon: Icon } = SOCIALS[key]
@@ -27,6 +33,8 @@ export function Hero() {
             <a
               key={key}
               href={site.socials[key]}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-panel px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
             >
               <Icon className="size-[15px]" />

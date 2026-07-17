@@ -1,4 +1,5 @@
 import type { Post } from '../types'
+import { estimateReadingMinutes } from '../readingTime'
 
 const HASHNODE_API = 'https://gql.hashnode.com'
 
@@ -70,6 +71,7 @@ function toPost(node: HashnodePostNode): Post {
     excerpt: node.brief,
     content: node.content.markdown,
     contentFormat: 'markdown',
+    readingMinutes: estimateReadingMinutes(node.content.markdown, 'markdown'),
     coverImage: node.coverImage?.url ?? null,
     publishedAt: node.publishedAt,
     tags: node.tags.map((tag) => tag.name),

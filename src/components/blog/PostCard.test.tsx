@@ -10,6 +10,7 @@ const post: Post = {
   excerpt: 'A verification layer that cut fraudulent requests by 90%.',
   content: 'word '.repeat(400),
   contentFormat: 'markdown',
+  readingMinutes: 2,
   coverImage: null,
   publishedAt: '2026-05-01T00:00:00.000Z',
   tags: ['kong', 'security', 'api-gateway', 'devops'],
