@@ -61,11 +61,11 @@ they need to be done by hand, once, by the site owner.
 
 ### 1. Resume PDF
 
-The Resume page embeds and links to `public/resume.pdf`, which is gitignored (large binary, keep
-it out of the repo).
+The Resume page embeds and links to `public/resume.pdf`, committed to the repo so it ships with
+every deploy (Vercel builds only from git — a gitignored file never reaches production).
 
 1. Export/save your resume as a PDF.
-2. Drop it in `public/resume.pdf`.
+2. Drop it in `public/resume.pdf` and commit it.
 
 ### 2. Blog platform webhooks (instant revalidation)
 
