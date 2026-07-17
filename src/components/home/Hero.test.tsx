@@ -12,10 +12,17 @@ describe('Hero', () => {
     expect(screen.getByText(site.bio)).toBeTruthy()
   })
 
-  it('renders CTA links to /blog and /resume', () => {
+  it('renders a CTA link to /blog', () => {
     render(<Hero />)
     expect(screen.getByRole('link', { name: /read the blog/i }).getAttribute('href')).toBe('/blog')
-    expect(screen.getByRole('link', { name: /view resume/i }).getAttribute('href')).toBe('/resume')
+  })
+
+  it('opens the resume PDF directly in a new tab', () => {
+    render(<Hero />)
+    const link = screen.getByRole('link', { name: /view resume/i })
+    expect(link.getAttribute('href')).toBe('/resume.pdf')
+    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
   })
 
   it('renders a link for every social plus email', () => {

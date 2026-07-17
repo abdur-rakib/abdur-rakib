@@ -50,12 +50,14 @@ export function Hero() {
           Read The Blog
           <ArrowRight size={15} strokeWidth={2} />
         </Link>
-        <Link
-          href="/resume"
+        <a
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="rounded-lg border border-border bg-panel px-4 py-2.5 text-sm font-medium"
         >
           View Resume
-        </Link>
+        </a>
       </div>
     </div>
   )

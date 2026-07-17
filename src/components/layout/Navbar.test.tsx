@@ -7,11 +7,10 @@ vi.mock('next/navigation', () => ({
 }))
 
 describe('Navbar', () => {
-  it('renders Home, Blog, and Resume links', () => {
+  it('renders Home and Blog links', () => {
     render(<Navbar />)
     expect(screen.getByRole('link', { name: 'Home' })).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Blog' })).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Resume' })).toBeTruthy()
   })
 
   it('marks the current route as active', () => {

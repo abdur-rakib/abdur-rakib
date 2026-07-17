@@ -1,8 +1,8 @@
 # Portfolio Site
 
-A personal portfolio built with Next.js. It has three sections: a **Home** page, a **Blog** page that
-aggregates posts from Hashnode and Medium into a single filterable feed, and a **Resume** page
-that embeds a local PDF (`public/resume.pdf`), with a download link alongside it.
+A personal portfolio built with Next.js. It has a **Home** page and a **Blog** page that aggregates
+posts from Hashnode and Medium into a single filterable feed. "View Resume" links (Home hero, Navbar)
+open `public/resume.pdf` directly in a new tab — there's no dedicated Resume page.
 
 ## Local development
 
@@ -61,7 +61,7 @@ they need to be done by hand, once, by the site owner.
 
 ### 1. Resume PDF
 
-The Resume page embeds and links to `public/resume.pdf`, committed to the repo so it ships with
+"View Resume" links open `public/resume.pdf` directly, committed to the repo so it ships with
 every deploy (Vercel builds only from git — a gitignored file never reaches production).
 
 1. Export/save your resume as a PDF.

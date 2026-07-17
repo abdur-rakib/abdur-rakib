@@ -8,7 +8,6 @@ import { site } from '@/config/site'
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
   { href: '/blog', label: 'Blog' },
-  { href: '/resume', label: 'Resume' },
 ]
 
 export function Navbar() {
