@@ -13,7 +13,7 @@ export default async function BlogPage() {
   const posts = await getAllPosts()
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Blog</h1>
         <p className="mt-2 max-w-[60ch] text-muted-foreground">
@@ -23,6 +23,7 @@ export default async function BlogPage() {
           the original piece.
         </p>
       </div>
+      <hr className="border-border" />
       <BlogExplorer posts={posts} />
     </div>
   )
