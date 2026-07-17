@@ -22,7 +22,7 @@ export function Hero() {
       <p className="max-w-[60ch] text-base leading-relaxed">
         {site.bio.split('bKash').flatMap((part, i, arr) =>
           i < arr.length - 1
-            ? [part, <strong key={i} className="font-semibold text-foreground">bKash</strong>]
+            ? [part, <strong key={i} className="font-semibold text-foreground">bKash Limited</strong>]
             : [part]
         )}
       </p>
