@@ -7,7 +7,7 @@ describe('ResumeEmbed', () => {
   it('embeds the local resume PDF', () => {
     render(<ResumeEmbed />)
     const iframe = screen.getByTitle(`${site.name} resume`)
-    expect(iframe.getAttribute('src')).toBe('/resume.pdf')
+    expect(iframe.getAttribute('src')).toBe('/resume.pdf#toolbar=0&navpanes=0')
   })
 
   it('links the download button to the local resume PDF', () => {

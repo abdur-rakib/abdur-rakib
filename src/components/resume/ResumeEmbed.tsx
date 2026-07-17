@@ -18,11 +18,13 @@ export function ResumeEmbed() {
           Download PDF
         </a>
       </div>
-      <iframe
-        src="/resume.pdf"
-        title={`${site.name} resume`}
-        className="min-h-[80vh] w-full rounded-xl border border-border"
-      />
+      <div className="p-3">
+        <iframe
+          src="/resume.pdf#toolbar=0&navpanes=0"
+          title={`${site.name} resume`}
+          className="min-h-[80vh] w-full"
+        />
+      </div>
     </div>
   )
 }
