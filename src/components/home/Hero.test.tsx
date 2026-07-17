@@ -15,7 +15,7 @@ describe('Hero', () => {
   it('renders CTA links to /blog and /resume', () => {
     render(<Hero />)
     expect(screen.getByRole('link', { name: /read the blog/i }).getAttribute('href')).toBe('/blog')
-    expect(screen.getByRole('link', { name: /view résumé/i }).getAttribute('href')).toBe('/resume')
+    expect(screen.getByRole('link', { name: /view resume/i }).getAttribute('href')).toBe('/resume')
   })
 
   it('renders a link for every social plus email', () => {

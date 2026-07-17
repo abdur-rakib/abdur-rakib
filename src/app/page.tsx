@@ -8,7 +8,7 @@ export default async function HomePage() {
   const posts = await getAllPosts()
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-10">
       <Hero />
       <hr className="border-border" />
       <LatestPosts posts={posts} />

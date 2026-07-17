@@ -6,7 +6,7 @@ export const revalidate = 21600
 
 export const metadata: Metadata = {
   title: 'Blog — Abdur Rakib',
-  description: 'Posts aggregated from dev.to, Hashnode, and Medium.',
+  description: 'Writing on backend engineering, system design, and the tradeoffs behind building reliable software.',
 }
 
 export default async function BlogPage() {
@@ -16,15 +16,14 @@ export default async function BlogPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Blog</h1>
-        <p className="mt-2 max-w-[56ch] text-muted-foreground">
-          Every post I publish, pulled from all three platforms into one feed.
-          Cross-posts are de-duplicated; each post links back to its original.
+        <p className="mt-2 max-w-[60ch] text-muted-foreground">
+          Notes on backend architecture, distributed systems, and the debugging
+          sessions that taught me the most. Every post lands in one feed here —
+          duplicates across platforms are merged, and each card links back to
+          the original piece.
         </p>
       </div>
       <BlogExplorer posts={posts} />
-      <p className="border-t border-border pt-6 text-center font-mono text-xs text-muted-foreground">
-        Aggregated from dev.to · Hashnode · Medium
-      </p>
     </div>
   )
 }

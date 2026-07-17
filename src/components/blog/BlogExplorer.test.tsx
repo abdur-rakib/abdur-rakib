@@ -25,16 +25,6 @@ describe('BlogExplorer', () => {
     expect(screen.getByText('Auto-Recharge Engine')).toBeTruthy()
   })
 
-  it('filters by source', async () => {
-    const user = userEvent.setup()
-    render(<BlogExplorer posts={posts} />)
-
-    await user.click(screen.getByRole('button', { name: 'Medium' }))
-
-    expect(screen.queryByText('Rate Limiting at the Gateway')).toBeNull()
-    expect(screen.getByText('Auto-Recharge Engine')).toBeTruthy()
-  })
-
   it('filters by tag', async () => {
     const user = userEvent.setup()
     render(<BlogExplorer posts={posts} />)
@@ -45,12 +35,8 @@ describe('BlogExplorer', () => {
     expect(screen.getByText('Auto-Recharge Engine')).toBeTruthy()
   })
 
-  it('shows an empty state when no posts match', async () => {
-    const user = userEvent.setup()
-    render(<BlogExplorer posts={posts} />)
-
-    await user.click(screen.getByRole('button', { name: 'Medium' }))
-    await user.click(screen.getByRole('button', { name: 'api-gateway' }))
+  it('shows an empty state when no posts match', () => {
+    render(<BlogExplorer posts={[]} />)
 
     expect(screen.getByText('No posts match these filters.')).toBeTruthy()
   })

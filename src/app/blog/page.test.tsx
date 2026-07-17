@@ -13,12 +13,12 @@ vi.mock('@/lib/aggregate', () => ({
 }))
 
 describe('BlogPage', () => {
-  it('renders the aggregated caption and post list', async () => {
+  it('renders the heading and post list', async () => {
     const { default: BlogPage } = await import('./page')
     const ui = await BlogPage()
     render(ui)
 
-    expect(screen.getByText('Aggregated from dev.to · Hashnode · Medium')).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'Blog' })).toBeTruthy()
     expect(screen.getByText('Custom Kong Plugins')).toBeTruthy()
   })
 })

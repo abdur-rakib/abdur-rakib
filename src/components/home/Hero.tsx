@@ -1,14 +1,11 @@
 import Link from 'next/link'
 import { ArrowRight, Mail, MapPin } from 'lucide-react'
 import { site } from '@/config/site'
-import { DevtoIcon, GithubIcon, HashnodeIcon, LinkedinIcon, MediumIcon } from '@/components/icons/BrandIcons'
+import { GithubIcon, LinkedinIcon } from '@/components/icons/BrandIcons'
 
-const SOCIALS: Record<keyof typeof site.socials, { label: string; icon: typeof GithubIcon }> = {
+const SOCIALS: Record<'github' | 'linkedin', { label: string; icon: typeof GithubIcon }> = {
   github: { label: 'GitHub', icon: GithubIcon },
   linkedin: { label: 'LinkedIn', icon: LinkedinIcon },
-  medium: { label: 'Medium', icon: MediumIcon },
-  devto: { label: 'dev.to', icon: DevtoIcon },
-  hashnode: { label: 'Hashnode', icon: HashnodeIcon },
 }
 
 export function Hero() {
@@ -23,23 +20,8 @@ export function Hero() {
         <p className="mt-3 text-lg text-muted-foreground">{site.role}</p>
       </div>
       <p className="max-w-[60ch] text-base leading-relaxed">{site.bio}</p>
-      <div className="flex flex-wrap gap-2.5">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
-        >
-          Read the blog
-          <ArrowRight size={15} strokeWidth={2} />
-        </Link>
-        <Link
-          href="/resume"
-          className="rounded-lg border border-border bg-panel px-4 py-2.5 text-sm font-medium"
-        >
-          View résumé
-        </Link>
-      </div>
       <div className="flex flex-wrap gap-2">
-        {(Object.keys(site.socials) as (keyof typeof site.socials)[]).map((key) => {
+        {(Object.keys(SOCIALS) as (keyof typeof SOCIALS)[]).map((key) => {
           const { label, icon: Icon } = SOCIALS[key]
           return (
             <a
@@ -59,6 +41,21 @@ export function Hero() {
           <Mail size={15} strokeWidth={2} />
           Email
         </a>
+      </div>
+      <div className="flex flex-wrap gap-2.5">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+        >
+          Read The Blog
+          <ArrowRight size={15} strokeWidth={2} />
+        </Link>
+        <Link
+          href="/resume"
+          className="rounded-lg border border-border bg-panel px-4 py-2.5 text-sm font-medium"
+        >
+          View Resume
+        </Link>
       </div>
     </div>
   )
