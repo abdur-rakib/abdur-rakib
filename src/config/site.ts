@@ -8,7 +8,6 @@ export interface SiteConfig {
     github: string
     linkedin: string
     medium: string
-    devto: string
     hashnode: string
   }
 }
@@ -23,7 +22,6 @@ export const site: SiteConfig = {
     github: 'https://github.com/abdur-rakib',
     linkedin: 'https://linkedin.com/in/abdurrakibcseruet',
     medium: 'https://medium.com/@abdur-rakib',
-    devto: 'https://dev.to/abdur-rakib',
     hashnode: 'https://abdur-rakib.hashnode.dev',
   },
 }
