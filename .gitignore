@@ -42,3 +42,9 @@ next-env.d.ts
 
 # claude code
 .claude
+
+# superpowers skill scratch state
+/.superpowers
+
+# pnpm local store
+/.pnpm-store
