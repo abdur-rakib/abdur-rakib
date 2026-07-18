@@ -7,7 +7,7 @@ Dhaka, Bangladesh
 
 5+ years building scalable web and backend systems — microservices, event-driven
 architectures, and API gateways engineered to hold up under millions of calls a day.
-Currently at **bKash**, Bangladesh's largest mobile financial service, where reliability
+Currently at **bKash Limited**, Bangladesh's largest mobile financial service, where reliability
 and scale aren't optional.
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-abdur--rakib.github.io-18181b?style=for-the-badge)](https://abdur-rakib.github.io/abdur-rakib)
@@ -50,11 +50,3 @@ Microservices · Event-Driven Systems · High Availability · Scalable System De
 
 **API Gateway & Security**
 Kong API Gateway · Express Gateway · OAuth 2.0 · JWT · OWASP Top 10
-
----
-
-### Currently
-
-- 🔭 Building subscription and identity systems handling millions of API calls a day at **bKash**
-- ✍️ Writing about backend architecture on [Hashnode](https://abdur-rakib.hashnode.dev) and [Medium](https://medium.com/@abdur-rakib)
-- 🌱 This repo doubles as my [GitHub Pages portfolio](https://abdur-rakib.github.io/abdur-rakib) — see [`CONTRIBUTING.md`](./CONTRIBUTING.md) for how it's built and deployed
