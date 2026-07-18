@@ -1,28 +1,24 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fetchHashnode } from './hashnode'
 
-const GRAPHQL_RESPONSE = {
-  data: {
-    publication: {
-      posts: {
-        edges: [
-          {
-            node: {
-              title: 'Offline-First React Native for Field Agents',
-              slug: 'offline-first-react-native',
-              brief: 'Syncing orders from remote areas reliably.',
-              url: 'https://abdur-rakib.hashnode.dev/offline-first-react-native',
-              publishedAt: '2026-04-01T00:00:00.000Z',
-              tags: [{ name: 'react-native' }, { name: 'redux' }],
-              coverImage: { url: 'https://cdn.hashnode.com/cover.png' },
-              content: { markdown: '# Offline-First\n\nFull body.' },
-            },
-          },
-        ],
-      },
-    },
-  },
-}
+const RSS_RESPONSE = `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+<channel>
+<title><![CDATA[Rakib's Tech Insights]]></title>
+<item>
+<title><![CDATA[Offline-First React Native for Field Agents]]></title>
+<description><![CDATA[Syncing orders from remote areas reliably.]]></description>
+<link>https://abdur-rakib.hashnode.dev/offline-first-react-native</link>
+<guid isPermaLink="true">https://abdur-rakib.hashnode.dev/offline-first-react-native</guid>
+<category><![CDATA[react-native]]></category>
+<category><![CDATA[redux]]></category>
+<dc:creator><![CDATA[Abdur Rakib]]></dc:creator>
+<pubDate>Wed, 01 Apr 2026 00:00:00 GMT</pubDate>
+<enclosure url="https://cdn.hashnode.com/cover.png" length="0" type="image/jpeg"/>
+<content:encoded><![CDATA[<h1>Offline-First</h1><p>Full body.</p>]]></content:encoded>
+</item>
+</channel>
+</rss>`
 
 describe('fetchHashnode', () => {
   afterEach(() => {
@@ -36,11 +32,11 @@ describe('fetchHashnode', () => {
     expect(result).toEqual([])
   })
 
-  it('maps GraphQL posts to normalized Post objects', async () => {
+  it('maps RSS items to normalized Post objects', async () => {
     vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => new Response(JSON.stringify(GRAPHQL_RESPONSE), { status: 200 }))
+      vi.fn(async () => new Response(RSS_RESPONSE, { status: 200 }))
     )
 
     const result = await fetchHashnode()
@@ -50,8 +46,9 @@ describe('fetchHashnode', () => {
       id: 'hashnode-offline-first-react-native',
       title: 'Offline-First React Native for Field Agents',
       slug: 'offline-first-react-native',
-      content: '# Offline-First\n\nFull body.',
-      contentFormat: 'markdown',
+      excerpt: 'Syncing orders from remote areas reliably.',
+      content: '<h1>Offline-First</h1><p>Full body.</p>',
+      contentFormat: 'html',
       coverImage: 'https://cdn.hashnode.com/cover.png',
       tags: ['react-native', 'redux'],
       source: 'hashnode',
@@ -61,11 +58,17 @@ describe('fetchHashnode', () => {
     })
   })
 
-  it('returns an empty array when the publication is not found', async () => {
+  it('returns an empty array when the feed has no items', async () => {
     vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => new Response(JSON.stringify({ data: { publication: null } }), { status: 200 }))
+      vi.fn(
+        async () =>
+          new Response(
+            '<?xml version="1.0"?><rss><channel><title>Empty</title></channel></rss>',
+            { status: 200 }
+          )
+      )
     )
 
     const result = await fetchHashnode()
@@ -76,6 +79,6 @@ describe('fetchHashnode', () => {
     vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
     vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 500 })))
 
-    await expect(fetchHashnode()).rejects.toThrow('Hashnode fetch failed: 500')
+    await expect(fetchHashnode()).rejects.toThrow('Hashnode feed fetch failed: 500')
   })
 })

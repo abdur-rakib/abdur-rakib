@@ -1,83 +1,67 @@
+import { XMLParser } from 'fast-xml-parser'
 import type { Post } from '../types'
 import { estimateReadingMinutes } from '../readingTime'
 
-const HASHNODE_API = 'https://gql.hashnode.com'
-
-const POSTS_QUERY = `
-  query PublicationPosts($host: String!) {
-    publication(host: $host) {
-      posts(first: 50) {
-        edges {
-          node {
-            title
-            slug
-            brief
-            url
-            publishedAt
-            tags { name }
-            coverImage { url }
-            content { markdown }
-          }
-        }
-      }
-    }
-  }
-`
-
-interface HashnodePostNode {
+interface HashnodeItem {
   title: string
-  slug: string
-  brief: string
-  url: string
-  publishedAt: string
-  tags: { name: string }[]
-  coverImage: { url: string } | null
-  content: { markdown: string }
+  link: string
+  guid: string
+  pubDate: string
+  category?: string | string[]
+  'content:encoded': string
+  description?: string
+  enclosure?: { '@_url'?: string }
 }
 
-interface HashnodeResponse {
-  data: {
-    publication: {
-      posts: { edges: { node: HashnodePostNode }[] }
-    } | null
-  }
-}
+const parser = new XMLParser({ ignoreAttributes: false })
 
 export async function fetchHashnode(): Promise<Post[]> {
   const host = process.env.HASHNODE_HOST
   if (!host) return []
 
-  const res = await fetch(HASHNODE_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: POSTS_QUERY, variables: { host } }),
-  })
+  const res = await fetch(`https://${host}/rss.xml`)
   if (!res.ok) {
-    throw new Error(`Hashnode fetch failed: ${res.status}`)
+    throw new Error(`Hashnode feed fetch failed: ${res.status}`)
   }
 
-  const json = (await res.json()) as HashnodeResponse
-  const publication = json.data.publication
-  if (!publication) return []
+  const xml = await res.text()
+  const parsed = parser.parse(xml)
+  const rawItems = parsed?.rss?.channel?.item ?? []
+  const items: HashnodeItem[] = Array.isArray(rawItems) ? rawItems : [rawItems]
 
-  return publication.posts.edges.map(({ node }) => toPost(node))
+  return items.map(toPost)
 }
 
-function toPost(node: HashnodePostNode): Post {
+function excerptFromHtml(html: string, maxLength = 160): string {
+  const text = html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (text.length <= maxLength) return text
+  const truncated = text.slice(0, maxLength)
+  const lastSpace = truncated.lastIndexOf(' ')
+  return `${truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength)}…`
+}
+
+function toPost(item: HashnodeItem): Post {
+  const html = item['content:encoded']
+  const tags = ([] as string[]).concat(item.category ?? [])
+  const slug = item.link.split('/').pop()?.split('?')[0] ?? item.guid
+
   return {
-    id: `hashnode-${node.slug}`,
-    title: node.title,
-    slug: node.slug,
-    excerpt: node.brief,
-    content: node.content.markdown,
-    contentFormat: 'markdown',
-    readingMinutes: estimateReadingMinutes(node.content.markdown, 'markdown'),
-    coverImage: node.coverImage?.url ?? null,
-    publishedAt: node.publishedAt,
-    tags: node.tags.map((tag) => tag.name),
+    id: `hashnode-${slug}`,
+    title: item.title,
+    slug,
+    excerpt: item.description ? excerptFromHtml(item.description) : excerptFromHtml(html),
+    content: html,
+    contentFormat: 'html',
+    readingMinutes: estimateReadingMinutes(html, 'html'),
+    coverImage: item.enclosure?.['@_url'] ?? null,
+    publishedAt: new Date(item.pubDate).toISOString(),
+    tags,
     source: 'hashnode',
     alsoOn: [],
-    originalUrl: node.url,
+    originalUrl: item.link,
     isPaywalled: false,
   }
 }
