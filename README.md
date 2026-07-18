@@ -10,7 +10,7 @@ architectures, and API gateways engineered to hold up under millions of calls a 
 Currently at **bKash Limited**, Bangladesh's largest mobile financial service, where reliability
 and scale aren't optional.
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-abdur--rakib.github.io-18181b?style=for-the-badge)](https://abdur-rakib.github.io/abdur-rakib)
+[![Portfolio](https://img.shields.io/badge/Portfolio-abdur--rakib.github.io-18181b?style=for-the-badge)](https://abdur-rakib.github.io)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-abdurrakibcseruet-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/abdurrakibcseruet)
 [![Medium](https://img.shields.io/badge/Medium-@abdur--rakib-000000?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@abdur-rakib)
 [![Hashnode](https://img.shields.io/badge/Hashnode-abdur--rakib-2962FF?style=for-the-badge&logo=hashnode&logoColor=white)](https://abdur-rakib.hashnode.dev)

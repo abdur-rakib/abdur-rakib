@@ -1,10 +1,8 @@
 # Portfolio Site — Development Notes
 
-> **This is the `github` branch** — a static-export build for GitHub Pages, served at
-> `abdur-rakib.github.io/abdur-rakib` (this repo is also `abdur-rakib/abdur-rakib`, which GitHub
-> uses specially as the [profile README](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme)
-> shown on `github.com/abdur-rakib` — that's what `README.md` is for). It diverges from `main`
-> (which deploys to Vercel with ISR): `output: 'export'` + `basePath: '/abdur-rakib'` in
+> **This is the `github` branch** — a static-export build for GitHub Pages, served at the root
+> (`abdur-rakib.github.io`), which requires this repo to be named exactly `abdur-rakib.github.io`.
+> It diverges from `main` (which deploys to Vercel with ISR): `output: 'export'` in
 > `next.config.ts`, no `/api/revalidate` route (static export can't run server code), and pages use
 > `dynamic = 'force-static'` instead of `revalidate` — content is frozen at build time and only
 > updates on the next push to this branch.
@@ -49,8 +47,8 @@ Copy `.env.example` to `.env.local` and fill these in:
 | ------------------------- | ------------------------------------------------------------------------ |
 | `HASHNODE_HOST`          | Hashnode publication host (e.g. `yourname.hashnode.dev`) to pull posts from. |
 | `MEDIUM_USERNAME`        | Medium username to pull posts from.                                     |
-| `NEXT_PUBLIC_SITE_URL`   | Canonical public URL of the deployed site (used for metadata, sitemap, robots). On this branch: `https://abdur-rakib.github.io/abdur-rakib`. |
-| `NEXT_PUBLIC_BASE_PATH`  | Subpath the site is served under on GitHub Pages (`/abdur-rakib`). Prefixes raw asset links (e.g. the résumé PDF) that Next's `basePath` doesn't auto-rewrite. |
+| `NEXT_PUBLIC_SITE_URL`   | Canonical public URL of the deployed site (used for metadata, sitemap, robots). On this branch: `https://abdur-rakib.github.io`. |
+| `NEXT_PUBLIC_BASE_PATH`  | Only needed if this ever moves to a project-page subpath instead of the root. Unset here — prefixes raw asset links (e.g. the résumé PDF) that Next's `basePath` doesn't auto-rewrite. |
 
 ## Test / build commands
 
@@ -86,11 +84,11 @@ add a scheduled (`on: schedule`) trigger to `.github/workflows/pages.yml`.
 `.github/workflows/pages.yml` runs typecheck/lint/test, builds the static export, and deploys it to
 GitHub Pages on every push to the `github` branch.
 
-1. This repo is named `abdur-rakib/abdur-rakib` — that name doubles as the special profile-README
-   repo, so Pages deploys as a **project page** at `abdur-rakib.github.io/abdur-rakib`, matching
-   `basePath: '/abdur-rakib'` in `next.config.ts`. Renaming the repo to `abdur-rakib.github.io`
-   instead moves Pages to the root (`abdur-rakib.github.io`, no subpath) but gives up the
-   profile-README behavior — `basePath` and the two env vars in `pages.yml` would need removing.
+1. This repo must be named exactly `abdur-rakib.github.io` — that exact name is what makes GitHub
+   serve it as a **root user page** with no subpath/`basePath` needed. Any other repo name deploys
+   as a project page at `<name>.github.io/<repo>` instead, which needs `basePath` back in
+   `next.config.ts` plus `NEXT_PUBLIC_BASE_PATH`/`NEXT_PUBLIC_SITE_URL` in `pages.yml` updated to
+   match.
 2. In GitHub: **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
 3. In GitHub: **Settings → Secrets and variables → Actions → Variables tab**, add repo variables
    `HASHNODE_HOST` and `MEDIUM_USERNAME` (same values as `.env.local`). These are plain variables,
