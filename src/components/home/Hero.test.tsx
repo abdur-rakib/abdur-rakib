@@ -9,12 +9,13 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1, name: site.name })).toBeTruthy()
     expect(screen.getByText(site.role)).toBeTruthy()
     expect(screen.getByText(site.location)).toBeTruthy()
-    expect(screen.getByText((_, el) => el?.textContent === site.bio)).toBeTruthy()
+    const expectedBio = site.bio.replace('bKash', 'bKash Limited')
+    expect(screen.getByText((_, el) => el?.textContent === expectedBio)).toBeTruthy()
   })
 
   it('bolds bKash within the bio', () => {
     render(<Hero />)
-    const strong = screen.getByText('bKash')
+    const strong = screen.getByText('bKash Limited')
     expect(strong.tagName).toBe('STRONG')
   })
 

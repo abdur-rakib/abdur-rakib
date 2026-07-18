@@ -2,7 +2,7 @@ import { getAllPosts } from '@/lib/aggregate'
 import { Hero } from '@/components/home/Hero'
 import { LatestPosts } from '@/components/home/LatestPosts'
 
-export const revalidate = 21600
+export const dynamic = 'force-static'
 
 export default async function HomePage() {
   const posts = await getAllPosts()

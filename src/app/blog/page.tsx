@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getAllPosts } from '@/lib/aggregate'
 import { PostCard } from '@/components/blog/PostCard'
 
-export const revalidate = 21600
+export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
   title: 'Blog — Abdur Rakib',

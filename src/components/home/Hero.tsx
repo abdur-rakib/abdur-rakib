@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Mail, MapPin } from 'lucide-react'
-import { site } from '@/config/site'
+import { site, basePath } from '@/config/site'
 import { GithubIcon, LinkedinIcon } from '@/components/icons/BrandIcons'
 
 const SOCIALS: Record<'github' | 'linkedin', { label: string; icon: typeof GithubIcon }> = {
@@ -59,7 +59,7 @@ export function Hero() {
           <ArrowRight size={15} strokeWidth={2} />
         </Link>
         <a
-          href="/resume.pdf"
+          href={`${basePath}/resume.pdf`}
           target="_blank"
           rel="noopener noreferrer"
           className="rounded-lg border border-border bg-panel px-4 py-2.5 text-sm font-medium"

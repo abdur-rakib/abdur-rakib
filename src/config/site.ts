@@ -1,3 +1,8 @@
+// GitHub Pages project sites serve from a subpath (e.g. /portfolio-site). Raw
+// `<a href>`/`<img src>` strings referencing /public assets aren't rewritten
+// by Next's basePath the way <Link>/<Image> are, so prefix them manually.
+export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+
 export interface SiteConfig {
   name: string
   role: string
