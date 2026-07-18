@@ -19,7 +19,7 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
   name: 'Abdur Rakib',
-  role: 'Senior Engineer',
+  role: 'Senior Software Engineer · Backend-Focused Full Stack',
   location: 'Dhaka, Bangladesh',
   bio: "5+ years building backend systems in Node.js and TypeScript — microservices, event-driven architectures, and API gateways engineered to hold up under millions of calls a day. Currently at bKash, Bangladesh's largest mobile financial service, where reliability and scale aren't optional.",
   email: 'abdurrakib961@gmail.com',
