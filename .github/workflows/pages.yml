@@ -44,8 +44,7 @@ jobs:
         env:
           HASHNODE_HOST: ${{ secrets.HASHNODE_HOST }}
           MEDIUM_USERNAME: ${{ secrets.MEDIUM_USERNAME }}
-          NEXT_PUBLIC_SITE_URL: https://abdur-rakib.github.io/portfolio-site
-          NEXT_PUBLIC_BASE_PATH: /portfolio-site
+          NEXT_PUBLIC_SITE_URL: https://abdur-rakib.github.io
 
       - uses: actions/configure-pages@v5
 

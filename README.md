@@ -1,10 +1,10 @@
 # Portfolio Site
 
-> **This is the `github` branch** — a static-export build for GitHub Pages
-> (`abdur-rakib.github.io/portfolio-site`). It diverges from `main` (which deploys to Vercel with
-> ISR): `output: 'export'` + `basePath: '/portfolio-site'` in `next.config.ts`, no `/api/revalidate`
-> route (static export can't run server code), and pages use `dynamic = 'force-static'` instead of
-> `revalidate` — content is frozen at build time and only updates on the next push to this branch.
+> **This is the `github` branch** — a static-export build for GitHub Pages, served at the root
+> (`abdur-rakib.github.io`). It diverges from `main` (which deploys to Vercel with ISR):
+> `output: 'export'` in `next.config.ts`, no `/api/revalidate` route (static export can't run
+> server code), and pages use `dynamic = 'force-static'` instead of `revalidate` — content is
+> frozen at build time and only updates on the next push to this branch.
 
 A personal portfolio built with Next.js. It has a **Home** page and a **Blog** page that aggregates
 posts from Hashnode and Medium into a single filterable feed. "View Resume" links (Home hero, Navbar)
@@ -46,8 +46,8 @@ Copy `.env.example` to `.env.local` and fill these in:
 | ------------------------- | ------------------------------------------------------------------------ |
 | `HASHNODE_HOST`          | Hashnode publication host (e.g. `yourname.hashnode.dev`) to pull posts from. |
 | `MEDIUM_USERNAME`        | Medium username to pull posts from.                                     |
-| `NEXT_PUBLIC_SITE_URL`   | Canonical public URL of the deployed site (used for metadata, sitemap, robots). On this branch: `https://abdur-rakib.github.io/portfolio-site`. |
-| `NEXT_PUBLIC_BASE_PATH`  | Subpath the site is served under on GitHub Pages (`/portfolio-site`). Prefixes raw asset links (e.g. the résumé PDF) that Next's `basePath` doesn't auto-rewrite. |
+| `NEXT_PUBLIC_SITE_URL`   | Canonical public URL of the deployed site (used for metadata, sitemap, robots). On this branch: `https://abdur-rakib.github.io`. |
+| `NEXT_PUBLIC_BASE_PATH`  | Only needed if this ever moves to a project-page subpath instead of the root. Unset here — prefixes raw asset links (e.g. the résumé PDF) that Next's `basePath` doesn't auto-rewrite. |
 
 ## Test / build commands
 
@@ -83,11 +83,11 @@ add a scheduled (`on: schedule`) trigger to `.github/workflows/pages.yml`.
 `.github/workflows/pages.yml` runs typecheck/lint/test, builds the static export, and deploys it to
 GitHub Pages on every push to the `github` branch.
 
-1. Push this repo to a GitHub remote named `abdur-rakib/portfolio-site` (the repo name — not
-   `abdur-rakib.github.io` — since this deploys as a **project page** at
-   `abdur-rakib.github.io/portfolio-site`, matching `basePath: '/portfolio-site'` in
-   `next.config.ts`. A differently-named repo needs that `basePath` — and `NEXT_PUBLIC_BASE_PATH`/
-   `NEXT_PUBLIC_SITE_URL` in `pages.yml` — updated to match.)
+1. Push this repo to a GitHub remote named exactly `abdur-rakib.github.io` — that exact name is
+   what makes GitHub serve it as a **root user page** with no subpath/`basePath` needed. Any other
+   repo name deploys as a project page at `<name>.github.io/<repo>` instead, which needs
+   `basePath` back in `next.config.ts` plus `NEXT_PUBLIC_BASE_PATH`/`NEXT_PUBLIC_SITE_URL` in
+   `pages.yml` updated to match.
 2. In GitHub: **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
 3. In GitHub: **Settings → Secrets and variables → Actions**, add repo secrets `HASHNODE_HOST` and
    `MEDIUM_USERNAME` (same values as `.env.local`).
