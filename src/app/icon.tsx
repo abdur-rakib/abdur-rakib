@@ -14,15 +14,26 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#09090b',
-          color: '#fafafa',
-          fontSize: 15,
-          fontWeight: 700,
-          fontFamily: 'sans-serif',
-          letterSpacing: -0.5,
         }}
       >
-        AR
+        <div
+          style={{
+            width: 27,
+            height: 27,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#09090b',
+            color: '#fafafa',
+            fontSize: 13,
+            fontWeight: 700,
+            fontFamily: 'sans-serif',
+            letterSpacing: -0.5,
+            borderRadius: 7,
+          }}
+        >
+          AR
+        </div>
       </div>
     ),
     { ...size }
