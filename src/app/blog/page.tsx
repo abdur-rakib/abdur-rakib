@@ -7,7 +7,7 @@ export const dynamic = 'force-static'
 export const metadata: Metadata = {
   title: 'Blog — Abdur Rakib',
   description:
-    'Long-form writing on backend architecture — microservices, event-driven systems, message queues, and API gateways — aggregated live from Hashnode and Medium.',
+    'Long-form writing on backend architecture — microservices, event-driven systems, message queues, and API gateways — aggregated live from all my writing.',
 }
 
 export default async function BlogPage() {
@@ -25,7 +25,7 @@ export default async function BlogPage() {
         <p className="mt-2 max-w-[62ch] text-muted-foreground">
           Everything I publish, in one feed. Deep dives on backend architecture —
           microservices, event-driven workflows, message brokers, and the
-          API-gateway plumbing behind them — pulled live from Hashnode and Medium.
+          API-gateway plumbing behind them — pulled live from all my writing.
           Cross-posts are merged into a single card, and every card opens the
           original piece.
         </p>
