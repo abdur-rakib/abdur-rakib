@@ -89,8 +89,9 @@ GitHub Pages on every push to the `github` branch.
    `basePath` back in `next.config.ts` plus `NEXT_PUBLIC_BASE_PATH`/`NEXT_PUBLIC_SITE_URL` in
    `pages.yml` updated to match.
 2. In GitHub: **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
-3. In GitHub: **Settings → Secrets and variables → Actions**, add repo secrets `HASHNODE_HOST` and
-   `MEDIUM_USERNAME` (same values as `.env.local`).
+3. In GitHub: **Settings → Secrets and variables → Actions → Variables tab**, add repo variables
+   `HASHNODE_HOST` and `MEDIUM_USERNAME` (same values as `.env.local`). These are plain variables,
+   not secrets — they're just a public subdomain and a public @handle, nothing confidential.
 4. Push to `github` (or merge into it). The workflow builds and deploys automatically; check the
    **Actions** tab for progress and the deployed URL.
 
