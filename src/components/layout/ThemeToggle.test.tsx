@@ -6,6 +6,7 @@ import { ThemeToggle } from './ThemeToggle'
 afterEach(() => {
   cleanup()
   document.documentElement.removeAttribute('data-theme')
+  document.documentElement.classList.remove('dark')
   window.localStorage.clear()
 })
 
@@ -27,5 +28,13 @@ describe('ThemeToggle', () => {
     await user.click(button)
     const secondTheme = document.documentElement.getAttribute('data-theme')
     expect(secondTheme).not.toBe(firstTheme)
+  })
+
+  it('uses the theme initialized on the document before hydration', () => {
+    document.documentElement.dataset.theme = 'dark'
+    render(<ThemeToggle />)
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 })
