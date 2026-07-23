@@ -5,18 +5,15 @@ import { Moon, Sun } from 'lucide-react'
 
 type Theme = 'light' | 'dark'
 
-function getSystemTheme(): Theme {
+function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'light'
+  const theme = document.documentElement.dataset.theme
+  if (theme === 'light' || theme === 'dark') return theme
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>(getSystemTheme)
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem('theme') as Theme | null
-    if (stored) setTheme(stored)
-  }, [])
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -31,7 +28,8 @@ export function ThemeToggle() {
       aria-label="Toggle theme"
       className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-panel text-muted-foreground transition-colors hover:text-foreground"
     >
-      {theme === 'dark' ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+      <Sun className="hidden dark:block" size={16} strokeWidth={2} />
+      <Moon className="block dark:hidden" size={16} strokeWidth={2} />
     </button>
   )
 }

@@ -29,7 +29,18 @@ export async function fetchHashnode(): Promise<Post[]> {
   const rawItems = parsed?.rss?.channel?.item ?? []
   const items: HashnodeItem[] = Array.isArray(rawItems) ? rawItems : [rawItems]
 
-  return items.map(toPost)
+  const posts = items.flatMap((item) => {
+    try {
+      return [toPost(item)]
+    } catch (error) {
+      console.error('[hashnode] skipped malformed feed item:', error)
+      return []
+    }
+  })
+  if (items.length > 0 && posts.length === 0) {
+    throw new Error('Hashnode feed contained no valid items')
+  }
+  return posts
 }
 
 function excerptFromHtml(html: string, maxLength = 160): string {
@@ -44,6 +55,15 @@ function excerptFromHtml(html: string, maxLength = 160): string {
 }
 
 function toPost(item: HashnodeItem): Post {
+  if (!item.title || !item.link || !item.pubDate || !item['content:encoded']) {
+    throw new Error('Hashnode feed item is missing required fields')
+  }
+
+  const publishedAt = new Date(item.pubDate)
+  if (Number.isNaN(publishedAt.getTime())) {
+    throw new Error(`Hashnode feed item has invalid pubDate: ${item.pubDate}`)
+  }
+
   const html = item['content:encoded']
   const tags = ([] as string[]).concat(item.category ?? [])
   const slug = item.link.split('/').pop()?.split('?')[0] ?? item.guid
@@ -57,7 +77,7 @@ function toPost(item: HashnodeItem): Post {
     contentFormat: 'html',
     readingMinutes: estimateReadingMinutes(html, 'html'),
     coverImage: item.enclosure?.['@_url'] ?? null,
-    publishedAt: new Date(item.pubDate).toISOString(),
+    publishedAt: publishedAt.toISOString(),
     tags,
     source: 'hashnode',
     alsoOn: [],

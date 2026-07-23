@@ -29,7 +29,18 @@ export async function fetchMedium(): Promise<Post[]> {
   const rawItems = parsed?.rss?.channel?.item ?? []
   const items: MediumItem[] = Array.isArray(rawItems) ? rawItems : [rawItems]
 
-  return items.map(toPost)
+  const posts = items.flatMap((item) => {
+    try {
+      return [toPost(item)]
+    } catch (error) {
+      console.error('[medium] skipped malformed feed item:', error)
+      return []
+    }
+  })
+  if (items.length > 0 && posts.length === 0) {
+    throw new Error('Medium feed contained no valid items')
+  }
+  return posts
 }
 
 function excerptFromHtml(html: string, maxLength = 160): string {
@@ -44,6 +55,15 @@ function excerptFromHtml(html: string, maxLength = 160): string {
 }
 
 function toPost(item: MediumItem): Post {
+  if (!item.title || !item.link || !item.pubDate || !item['content:encoded']) {
+    throw new Error('Medium feed item is missing required fields')
+  }
+
+  const publishedAt = new Date(item.pubDate)
+  if (Number.isNaN(publishedAt.getTime())) {
+    throw new Error(`Medium feed item has invalid pubDate: ${item.pubDate}`)
+  }
+
   const { html, isPaywalled } = sanitizeMediumContent(item['content:encoded'])
   const tags = ([] as string[]).concat(item.category ?? [])
   const slug = item.link.split('/').pop()?.split('?')[0] ?? item.guid
@@ -57,7 +77,7 @@ function toPost(item: MediumItem): Post {
     contentFormat: 'html',
     readingMinutes: estimateReadingMinutes(html, 'html'),
     coverImage: null,
-    publishedAt: new Date(item.pubDate).toISOString(),
+    publishedAt: publishedAt.toISOString(),
     tags,
     source: 'medium',
     alsoOn: [],

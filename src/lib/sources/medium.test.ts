@@ -82,4 +82,32 @@ describe('fetchMedium', () => {
 
     await expect(fetchMedium()).rejects.toThrow('Medium feed fetch failed: 404')
   })
+
+  it('skips malformed items while preserving valid posts', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
+    const malformedItem = `<item><title>Broken</title><link>https://medium.com/broken</link><guid>broken</guid><pubDate>not-a-date</pubDate><content:encoded><![CDATA[<p>Broken</p>]]></content:encoded></item>`
+    const rss = SAMPLE_RSS.replace('</channel>', `${malformedItem}</channel>`)
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss, { status: 200 })))
+
+    const result = await fetchMedium()
+
+    expect(result).toHaveLength(1)
+    expect(result[0].title).toBe('Enforcing Coverage Thresholds in GitLab CI')
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('skipped malformed feed item'),
+      expect.any(Error)
+    )
+    errorSpy.mockRestore()
+  })
+
+  it('rejects a feed containing only malformed items', async () => {
+    vi.stubEnv('MEDIUM_USERNAME', '@abdur-rakib')
+    const rss = SAMPLE_RSS.replace('Wed, 04 Mar 2026 00:00:00 GMT', 'not-a-date')
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss, { status: 200 })))
+
+    await expect(fetchMedium()).rejects.toThrow('Medium feed contained no valid items')
+    errorSpy.mockRestore()
+  })
 })

@@ -75,6 +75,34 @@ describe('fetchHashnode', () => {
     expect(result).toEqual([])
   })
 
+  it('skips malformed items while preserving valid posts', async () => {
+    vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
+    const malformedItem = `<item><title>Broken</title><link>https://example.com/broken</link><guid>broken</guid><pubDate>not-a-date</pubDate><content:encoded><![CDATA[<p>Broken</p>]]></content:encoded></item>`
+    const rss = RSS_RESPONSE.replace('</channel>', `${malformedItem}</channel>`)
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss, { status: 200 })))
+
+    const result = await fetchHashnode()
+
+    expect(result).toHaveLength(1)
+    expect(result[0].title).toBe('Offline-First React Native for Field Agents')
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('skipped malformed feed item'),
+      expect.any(Error)
+    )
+    errorSpy.mockRestore()
+  })
+
+  it('rejects a feed containing only malformed items', async () => {
+    vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
+    const rss = RSS_RESPONSE.replace('Wed, 01 Apr 2026 00:00:00 GMT', 'not-a-date')
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(rss, { status: 200 })))
+
+    await expect(fetchHashnode()).rejects.toThrow('Hashnode feed contained no valid items')
+    errorSpy.mockRestore()
+  })
+
   it('throws when the request fails', async () => {
     vi.stubEnv('HASHNODE_HOST', 'abdur-rakib.hashnode.dev')
     vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 500 })))
