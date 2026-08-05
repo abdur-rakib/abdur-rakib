@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import type { Post } from '@/lib/types'
-import { hasOnSitePage, postHref } from '@/lib/postRouting'
+import { postHref } from '@/lib/postRouting'
 import { SourceBadge } from './SourceBadge'
 
 function formatDate(iso: string) {
@@ -9,7 +9,6 @@ function formatDate(iso: string) {
 }
 
 export function PostCard({ post }: { post: Post }) {
-  const onSite = hasOnSitePage(post)
   const content = (
     <>
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -31,11 +30,7 @@ export function PostCard({ post }: { post: Post }) {
             {tag}
           </span>
         ))}
-        {onSite ? (
-          <ArrowRight size={14} strokeWidth={2} className="ml-auto text-muted-2 group-hover:text-foreground" />
-        ) : (
-          <ArrowUpRight size={14} strokeWidth={2} className="ml-auto text-muted-2 group-hover:text-foreground" />
-        )}
+        <ArrowRight size={14} strokeWidth={2} className="ml-auto text-muted-2 group-hover:text-foreground" />
       </div>
     </>
   )
@@ -43,17 +38,9 @@ export function PostCard({ post }: { post: Post }) {
   const cardClasses =
     'group flex flex-col gap-2.5 rounded-xl border border-border bg-panel p-4.5 transition hover:-translate-y-0.5 hover:border-border-strong'
 
-  if (onSite) {
-    return (
-      <Link href={postHref(post)} className={cardClasses}>
-        {content}
-      </Link>
-    )
-  }
-
   return (
-    <a href={post.originalUrl} target="_blank" rel="noopener noreferrer" className={cardClasses}>
+    <Link href={postHref(post)} className={cardClasses}>
       {content}
-    </a>
+    </Link>
   )
 }

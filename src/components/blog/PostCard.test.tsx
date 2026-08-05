@@ -21,19 +21,18 @@ const post: Post = {
 }
 
 describe('PostCard', () => {
-  it('links to the original post in a new tab', () => {
+  it('routes metadata-only posts internally', () => {
     render(<PostCard post={post} />)
     const link = screen.getByRole('link')
-    expect(link.getAttribute('href')).toBe(post.originalUrl)
-    expect(link.getAttribute('target')).toBe('_blank')
-    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+    expect(link.getAttribute('href')).toBe('/blog/kong-plugins')
+    expect(link.getAttribute('target')).toBeNull()
   })
 
-  it('keeps a full HTML Medium post linked externally', () => {
+  it('routes a full HTML external-source post to the internal page', () => {
     render(<PostCard post={{ ...post, contentFormat: 'html', content: '<p>full body</p>' }} />)
     const link = screen.getByRole('link')
-    expect(link.getAttribute('href')).toBe(post.originalUrl)
-    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('href')).toBe('/blog/kong-plugins')
+    expect(link.getAttribute('target')).toBeNull()
   })
 
   it('renders the title and excerpt', () => {

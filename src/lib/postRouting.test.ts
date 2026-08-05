@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Post } from './types'
-import { hasOnSitePage, postHref } from './postRouting'
+import { postHref } from './postRouting'
 
 function makePost(overrides: Partial<Post> = {}): Post {
   return {
@@ -12,30 +12,8 @@ function makePost(overrides: Partial<Post> = {}): Post {
 }
 
 describe('postRouting', () => {
-  it('treats a full HTML, non-paywalled post as on-site', () => {
-    expect(hasOnSitePage(makePost())).toBe(true)
-  })
-
-  it('keeps paywalled posts link-out', () => {
-    expect(hasOnSitePage(makePost({ isPaywalled: true }))).toBe(false)
-  })
-
-  it('keeps empty-content and non-HTML posts link-out', () => {
-    expect(hasOnSitePage(makePost({ content: '' }))).toBe(false)
-    expect(hasOnSitePage(makePost({ contentFormat: 'markdown' }))).toBe(false)
-  })
-
-  it('keeps full HTML Medium posts link-out', () => {
-    const mediumPost = makePost({
-      source: 'medium',
-      originalUrl: 'https://medium.com/@author/post',
-    })
-    expect(hasOnSitePage(mediumPost)).toBe(false)
-    expect(postHref(mediumPost)).toBe(mediumPost.originalUrl)
-  })
-
-  it('returns the internal path for on-site posts and the original URL otherwise', () => {
+  it('routes every supported post category to the internal page', () => {
     expect(postHref(makePost())).toBe('/blog/x')
-    expect(postHref(makePost({ isPaywalled: true }))).toBe('https://hashnode.dev/x')
+    expect(postHref(makePost({ source: 'medium', content: '', contentFormat: 'markdown', isPaywalled: true }))).toBe('/blog/x')
   })
 })

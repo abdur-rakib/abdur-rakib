@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { getAllPosts } from '@/lib/aggregate'
-import { hasOnSitePage } from '@/lib/postRouting'
 import { sanitizePostContent } from '@/lib/postContent'
 import { SourceBadge } from '@/components/blog/SourceBadge'
 import { site } from '@/config/site'
@@ -28,7 +27,7 @@ const SOURCE_ICONS: Record<PostSource, typeof MediumIcon> = {
 
 export async function generateStaticParams() {
   const posts = await getAllPosts()
-  return posts.filter(hasOnSitePage).map((post) => ({ slug: post.slug }))
+  return posts.map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata({ params }: PostPageParams): Promise<Metadata> {
@@ -36,7 +35,7 @@ export async function generateMetadata({ params }: PostPageParams): Promise<Meta
   const posts = await getAllPosts()
   const post = posts.find((candidate) => candidate.slug === slug)
 
-  if (!post || !hasOnSitePage(post)) return {}
+  if (!post) return {}
 
   return {
     title: post.title,
@@ -51,7 +50,7 @@ export default async function PostPage({ params }: PostPageParams) {
   const posts = await getAllPosts()
   const post = posts.find((candidate) => candidate.slug === slug)
 
-  if (!post || !hasOnSitePage(post)) {
+  if (!post) {
     notFound()
   }
 
