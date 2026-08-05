@@ -45,4 +45,20 @@ describe('PostCard', () => {
     render(<PostCard post={post} />)
     expect(screen.getAllByText(/^(kong|security|api-gateway|devops)$/)).toHaveLength(3)
   })
+
+  it('links internally to the post page for on-site posts', () => {
+    const onsite: Post = {
+      ...post,
+      id: 'hashnode-onsite',
+      source: 'hashnode',
+      slug: 'on-site-post',
+      contentFormat: 'html',
+      content: '<p>body</p>',
+      originalUrl: 'https://hashnode.dev/on-site-post',
+    }
+    render(<PostCard post={onsite} />)
+    const link = screen.getByRole('link')
+    expect(link.getAttribute('href')).toBe('/blog/on-site-post')
+    expect(link.getAttribute('target')).toBeNull()
+  })
 })
