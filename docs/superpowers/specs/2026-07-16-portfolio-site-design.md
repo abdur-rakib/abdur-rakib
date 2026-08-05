@@ -21,8 +21,8 @@ About page, contact form. May be added later; not part of v1.
 
 ## Goals & Success Criteria
 
-- One feed showing every post across all three platforms, each linking back to
-  its canonical original.
+- One feed showing every post across all three platforms, each opening an
+  internal detail page that links back to its canonical original.
 - Resume always current without a redeploy (owner updates the Drive PDF).
 - Lighthouse ≥ 90 across the board; correct SEO/canonical tags.
 - Cost: $0/month (domain optional, ~$10/yr).
@@ -67,9 +67,9 @@ About page, contact form. May be added later; not part of v1.
 
 ### `/blog/[slug]` — Post page
 - `export const dynamic = 'force-static'` and `dynamicParams = false`.
-- `generateStaticParams()` includes only posts with a full, non-paywalled HTML body.
-- Hashnode posts with trustworthy content render on-site after sanitization; other
-  posts remain external links to their original platform.
+- `generateStaticParams()` includes every post returned by `getAllPosts()`.
+- Every post renders on-site after sanitization when content is available; the
+  detail page still links to the original platform source.
 - Full body via sanitized HTML.
 - `generateMetadata()` sets `alternates.canonical = post.originalUrl` and a
   `<link rel="canonical">`.
@@ -117,8 +117,8 @@ export interface Post {
 ```
 
 `sanitizePostContent` sanitizes HTML before it is rendered on an on-site post
-page. `hasOnSitePage` requires a non-empty Hashnode HTML body and excludes
-paywalled posts; all other cards link to `originalUrl`.
+page. Every post card links to the corresponding internal `/blog/[slug]`
+detail page; that page links to `originalUrl` for the canonical source.
 
 ### Source loaders (`src/lib/sources/`)
 - **devto.ts** — `https://dev.to/api/articles?username={DEVTO_USERNAME}&per_page=100`;
@@ -210,7 +210,7 @@ Home, blog, post, and sitemap routes use `dynamic = 'force-static'`.
 
 - `generateMetadata` on every route.
 - `alternates.canonical = post.originalUrl` on all blog post pages.
-- `app/sitemap.ts` (static + blog + on-site post routes), `app/robots.ts`.
+- `app/sitemap.ts` (static + blog + every post detail route), `app/robots.ts`.
 - `app/opengraph-image.tsx` + per-post dynamic OG via `ImageResponse`.
 - `next/font` for zero layout shift (or system stack — no webfont CDN needed).
 

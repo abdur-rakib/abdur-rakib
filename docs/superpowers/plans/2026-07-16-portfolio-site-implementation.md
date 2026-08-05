@@ -2583,7 +2583,8 @@ export default async function BlogPage() {
         <h1 className="text-3xl font-semibold tracking-tight">Blog</h1>
         <p className="mt-2 max-w-[56ch] text-muted">
           Every post I publish, pulled from all three platforms into one feed.
-          Cross-posts are de-duplicated; each post links back to its original.
+          Cross-posts are de-duplicated; each post opens an internal detail page
+          with a link back to its original.
         </p>
       </div>
       <BlogExplorer posts={posts} />
@@ -2658,14 +2659,15 @@ git commit -m "feat: add blog index page"
 - Create: `src/app/blog/[slug]/page.test.tsx`
 
 **Interfaces:**
-- Consumes: `getAllPosts` (Task 8), `SourceBadge` (Task 13), `hasOnSitePage` (routing helper), and `Post` (Task 2).
+- Consumes: `getAllPosts` (Task 8), `SourceBadge` (Task 13), and `Post` (Task 2).
 - Produces: the `/blog/[slug]` route with `generateStaticParams` and
-  `generateMetadata`; only full, non-paywalled Hashnode HTML posts are included.
+  `generateMetadata`; every post returned by `getAllPosts()` is included.
 
 - [ ] **Step 1: Write the failing route test**
 
-The route test should verify that a full Hashnode HTML post is rendered and
-that only eligible Hashnode posts are returned by `generateStaticParams`.
+The route test should verify that a post is rendered and that every post is
+returned by `generateStaticParams`, including posts with short or paywalled
+source content.
 
 ```tsx
 import { describe, expect, it } from 'vitest'
@@ -2858,14 +2860,14 @@ describe('PostPage', () => {
     expect(screen.getByText('Text.')).toBeTruthy()
   })
 
-  it('renders the excerpt and a link to Medium for a paywalled post', async () => {
+  it('renders the excerpt and source content for a paywalled post', async () => {
     const { default: PostPage } = await import('./page')
     const ui = await PostPage({ params: Promise.resolve({ source: 'medium', slug: 'paywalled-post' }) })
     render(ui)
 
     expect(screen.getByText('excerpt')).toBeTruthy()
-    expect(screen.queryByText('Teaser.')).toBeNull()
-    const link = screen.getByRole('link', { name: /read full article on medium/i })
+    expect(screen.getByText('Teaser.')).toBeTruthy()
+    const link = screen.getByRole('link', { name: /read the original on medium/i })
     expect(link.getAttribute('href')).toBe('https://medium.com/p/b')
   })
 })
