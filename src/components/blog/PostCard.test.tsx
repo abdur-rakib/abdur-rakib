@@ -29,6 +29,13 @@ describe('PostCard', () => {
     expect(link.getAttribute('rel')).toBe('noopener noreferrer')
   })
 
+  it('keeps a full HTML Medium post linked externally', () => {
+    render(<PostCard post={{ ...post, contentFormat: 'html', content: '<p>full body</p>' }} />)
+    const link = screen.getByRole('link')
+    expect(link.getAttribute('href')).toBe(post.originalUrl)
+    expect(link.getAttribute('target')).toBe('_blank')
+  })
+
   it('renders the title and excerpt', () => {
     render(<PostCard post={post} />)
     expect(screen.getByText(post.title)).toBeTruthy()

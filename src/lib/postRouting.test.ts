@@ -25,6 +25,15 @@ describe('postRouting', () => {
     expect(hasOnSitePage(makePost({ contentFormat: 'markdown' }))).toBe(false)
   })
 
+  it('keeps full HTML Medium posts link-out', () => {
+    const mediumPost = makePost({
+      source: 'medium',
+      originalUrl: 'https://medium.com/@author/post',
+    })
+    expect(hasOnSitePage(mediumPost)).toBe(false)
+    expect(postHref(mediumPost)).toBe(mediumPost.originalUrl)
+  })
+
   it('returns the internal path for on-site posts and the original URL otherwise', () => {
     expect(postHref(makePost())).toBe('/blog/x')
     expect(postHref(makePost({ isPaywalled: true }))).toBe('https://hashnode.dev/x')
