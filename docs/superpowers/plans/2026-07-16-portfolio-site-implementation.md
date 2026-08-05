@@ -13,12 +13,15 @@
 - Next.js 15, App Router, TypeScript strict mode. (spec: Tech Stack)
 - Tailwind CSS v4 uses CSS-based `@theme` config — no `tailwind.config.ts`. (spec: Tech Stack)
 - Package manager: pnpm. Node version: 22. (spec: Tech Stack, Docker)
-- Blog index and post pages: `export const revalidate = 21600` (6 hours). (spec: Rendering Strategy)
+- Home, blog, post, and sitemap routes use `dynamic = 'force-static'`; content
+  refreshes on the next static build. (spec: Rendering Strategy)
 - All blog post pages set `alternates.canonical = post.originalUrl`. (spec: SEO)
 - Medium sanitize allowlist: `p, a, strong, em, h1–h6, ul, ol, li, blockquote, pre, code, img, figure, figcaption`. Strip `<img>` with width/height of `1`. (spec: Blog Sources)
 - Medium `isPaywalled = true` when sanitized content is under 500 characters. (spec: Blog Sources)
 - Medium image domains allowlisted in `next.config.ts`: `cdn-images-1.medium.com`, `miro.medium.com`. (spec: Blog Sources)
-- Cross-post dedupe: normalize by title slug, keep earliest `publishedAt` as primary `source`, record other platforms in `alsoOn`. (spec: Data Layer)
+- Cross-post dedupe: normalize by title slug, prefer Hashnode as primary when
+  present, preserve the earliest `publishedAt`, and record other platforms in
+  `alsoOn`. (spec: Data Layer)
 - All three source fetches run through `Promise.allSettled` — one platform failing must not crash the page. (spec: Aggregation)
 - No projects pages, no About page, no contact form (cut from scope). (spec: Overview)
 - No `resume.json` rendering — resume is a Google Drive PDF embed only. `resumeDriveFileId` is public, stored in `src/config/site.ts`, not an env var. (spec: Resume)
@@ -430,7 +433,7 @@ describe('dedupeAndSort', () => {
     expect(result).toHaveLength(2)
   })
 
-  it('merges cross-posts with the same title, keeping the earliest as primary', () => {
+  it('merges cross-posts with the same title, preferring Hashnode as primary', () => {
     const posts = [
       makePost({
         id: 'medium-1',
@@ -1225,7 +1228,7 @@ git commit -m "feat: add Medium RSS loader with sanitize and paywall detection"
 
 **Interfaces:**
 - Consumes: `fetchDevto` (Task 4), `fetchHashnode` (Task 5), `fetchMedium` (Task 7), `dedupeAndSort` (Task 3).
-- Produces: `combinePosts(): Promise<Post[]>` (settle-and-merge logic, directly testable) and `getAllPosts: () => Promise<Post[]>` (React `cache`-wrapped, used by pages). Consumed by Home page (Task 15), Blog index (Task 16), Post detail (Task 17), sitemap (Task 19).
+- Produces: `combinePosts(): Promise<Post[]>` (settle-and-merge logic, directly testable) and `getAllPosts: () => Promise<Post[]>` (module-scoped build snapshot, used by pages). Consumed by Home page (Task 15), Blog index (Task 16), Post detail (Task 17), sitemap (Task 19).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -2486,7 +2489,7 @@ import { getAllPosts } from '@/lib/aggregate'
 import { Hero } from '@/components/home/Hero'
 import { LatestPosts } from '@/components/home/LatestPosts'
 
-export const revalidate = 21600
+export const dynamic = 'force-static'
 
 export default async function HomePage() {
   const posts = await getAllPosts()
@@ -2564,7 +2567,7 @@ import type { Metadata } from 'next'
 import { getAllPosts } from '@/lib/aggregate'
 import { BlogExplorer } from '@/components/blog/BlogExplorer'
 
-export const revalidate = 21600
+export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
   title: 'Blog — Abdur Rakib',
@@ -2651,18 +2654,18 @@ git commit -m "feat: add blog index page"
 ## Task 17: Post detail page
 
 **Files:**
-- Create: `src/components/blog/PostBody.tsx`
-- Create: `src/components/blog/PostBody.test.tsx`
-- Create: `src/app/blog/[source]/[slug]/page.tsx`
-- Create: `src/app/blog/[source]/[slug]/page.test.tsx`
+- Create: `src/app/blog/[slug]/page.tsx`
+- Create: `src/app/blog/[slug]/page.test.tsx`
 
 **Interfaces:**
-- Consumes: `getAllPosts` (Task 8), `SourceBadge` (Task 13), `Post` (Task 2).
-- Produces: `PostBody` (props: `post: Post`), the `/blog/[source]/[slug]` route with `generateStaticParams` and `generateMetadata`.
+- Consumes: `getAllPosts` (Task 8), `SourceBadge` (Task 13), `hasOnSitePage` (routing helper), and `Post` (Task 2).
+- Produces: the `/blog/[slug]` route with `generateStaticParams` and
+  `generateMetadata`; only full, non-paywalled Hashnode HTML posts are included.
 
-- [ ] **Step 1: Write the failing PostBody test**
+- [ ] **Step 1: Write the failing route test**
 
-Create `src/components/blog/PostBody.test.tsx`:
+The route test should verify that a full Hashnode HTML post is rendered and
+that only eligible Hashnode posts are returned by `generateStaticParams`.
 
 ```tsx
 import { describe, expect, it } from 'vitest'
@@ -2740,7 +2743,7 @@ Expected: PASS (2 tests).
 
 - [ ] **Step 5: Create the post detail page**
 
-Create `src/app/blog/[source]/[slug]/page.tsx`:
+Create `src/app/blog/[slug]/page.tsx`:
 
 ```tsx
 import { notFound } from 'next/navigation'
@@ -2749,7 +2752,8 @@ import { getAllPosts } from '@/lib/aggregate'
 import { PostBody } from '@/components/blog/PostBody'
 import { SourceBadge } from '@/components/blog/SourceBadge'
 
-export const revalidate = 21600
+export const dynamic = 'force-static'
+export const dynamicParams = false
 
 type PageParams = { source: string; slug: string }
 
@@ -2820,7 +2824,7 @@ export default async function PostPage({ params }: { params: Promise<PageParams>
 
 - [ ] **Step 6: Write the failing route test**
 
-Create `src/app/blog/[source]/[slug]/page.test.tsx`:
+Create `src/app/blog/[slug]/page.test.tsx`:
 
 ```tsx
 import { describe, expect, it, vi } from 'vitest'
@@ -2870,7 +2874,7 @@ describe('PostPage', () => {
 - [ ] **Step 7: Run test to verify it passes**
 
 ```bash
-pnpm test "src/app/blog/[source]/[slug]/page.test.tsx"
+pnpm test "src/app/blog/[slug]/page.test.tsx"
 ```
 
 Expected: PASS (2 tests).
@@ -2886,7 +2890,7 @@ Expected: PASS. With no `.env.local` values reachable at build time in CI (they 
 - [ ] **Step 9: Commit**
 
 ```bash
-git add src/components/blog/PostBody.tsx src/components/blog/PostBody.test.tsx "src/app/blog/[source]/[slug]/page.tsx" "src/app/blog/[source]/[slug]/page.test.tsx"
+git add "src/app/blog/[slug]/page.tsx" "src/app/blog/[slug]/page.test.tsx"
 git commit -m "feat: add post detail page with canonical metadata and paywall handling"
 ```
 
@@ -3040,7 +3044,7 @@ git commit -m "feat: add resume page with embedded Google Drive PDF"
 - Create: `src/app/sitemap.ts`
 - Create: `src/app/robots.ts`
 - Create: `src/app/opengraph-image.tsx`
-- Create: `src/app/blog/[source]/[slug]/opengraph-image.tsx`
+- Create: `src/app/blog/[slug]/opengraph-image.tsx`
 
 **Interfaces:**
 - Consumes: `getAllPosts` (Task 8), `site` (Task 2).
@@ -3125,7 +3129,7 @@ export default function Image() {
 
 - [ ] **Step 4: Create the per-post OG image**
 
-Create `src/app/blog/[source]/[slug]/opengraph-image.tsx`:
+Create `src/app/blog/[slug]/opengraph-image.tsx`:
 
 ```tsx
 import { ImageResponse } from 'next/og'
@@ -3186,7 +3190,7 @@ Expected: PASS (no new tests — these are Next.js file-convention routes with n
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/app/sitemap.ts src/app/robots.ts src/app/opengraph-image.tsx "src/app/blog/[source]/[slug]/opengraph-image.tsx"
+git add src/app/sitemap.ts src/app/robots.ts src/app/opengraph-image.tsx "src/app/blog/[slug]/opengraph-image.tsx"
 git commit -m "feat: add sitemap, robots, and OG image generation"
 ```
 
@@ -3478,7 +3482,7 @@ Push to `main` and confirm in the GitHub Actions tab that both `CI` and `Deploy`
 ## Self-Review
 
 **Spec coverage:**
-- Pages `/`, `/blog`, `/blog/[source]/[slug]`, `/resume`, `/api/revalidate` — Tasks 15–18, 20. ✓
+- Pages `/`, `/blog`, `/blog/[slug]`, `/resume` — Tasks 15–18, 20. ✓
 - Data types, loaders, dedupe, aggregate — Tasks 2–8. ✓
 - Site config replacing `resume.json` — Task 2. ✓
 - Design tokens (light/dark) — Task 9. ✓
