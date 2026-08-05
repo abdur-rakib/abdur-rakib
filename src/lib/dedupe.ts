@@ -21,13 +21,18 @@ export function dedupeAndSort(posts: Post[]): Post[] {
     }
 
     const earlier = post.publishedAt < existing.publishedAt ? post : existing
-    const later = post.publishedAt < existing.publishedAt ? existing : post
+    const primary =
+      existing.source === 'hashnode'
+        ? existing
+        : post.source === 'hashnode'
+          ? post
+          : earlier
 
     const alsoOn = Array.from(
-      new Set([...existing.alsoOn, ...post.alsoOn, later.source])
-    ).filter((source): source is PostSource => source !== earlier.source)
+      new Set([...existing.alsoOn, ...post.alsoOn, existing.source, post.source])
+    ).filter((source): source is PostSource => source !== primary.source)
 
-    byTitle.set(key, { ...earlier, alsoOn })
+    byTitle.set(key, { ...primary, publishedAt: earlier.publishedAt, alsoOn })
   }
 
   return Array.from(byTitle.values()).sort((a, b) =>
