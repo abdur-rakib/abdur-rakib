@@ -56,7 +56,7 @@ About page, contact form. May be added later; not part of v1.
 - Bio, role, location, and social URLs come from `src/config/site.ts` (see below).
 
 ### `/blog` — Blog index
-- `export const revalidate = 21600` (6h ISR).
+- `export const dynamic = 'force-static'`; content refreshes on the next build.
 - Grid of `PostCard` from `getAllPosts()`.
 - **Source filter** (All / dev.to / Hashnode / Medium) — client component.
 - **Tag filter** (All / per-tag) — client component.
@@ -65,13 +65,15 @@ About page, contact form. May be added later; not part of v1.
 - **Blog footer caption:** "Aggregated from dev.to · Hashnode · Medium" lives
   here (moved out of the page-top eyebrow).
 
-### `/blog/[source]/[slug]` — Post page
-- `export const revalidate = 21600`.
-- `generateStaticParams()` from `getAllPosts()` — static at build, regenerated via ISR.
-- Full body via `PostBody` (markdown for dev.to/Hashnode; sanitized HTML for Medium).
+### `/blog/[slug]` — Post page
+- `export const dynamic = 'force-static'` and `dynamicParams = false`.
+- `generateStaticParams()` includes only posts with a full, non-paywalled HTML body.
+- Hashnode posts with trustworthy content render on-site after sanitization; other
+  posts remain external links to their original platform.
+- Full body via sanitized HTML.
 - `generateMetadata()` sets `alternates.canonical = post.originalUrl` and a
   `<link rel="canonical">`.
-- Paywalled Medium posts: show excerpt + "Read full article on Medium →" button.
+- The post page includes a link to the original source.
 
 ### `/resume` — Resume
 - **Embedded Google Drive PDF** via preview iframe:
@@ -102,27 +104,27 @@ export interface Post {
   title: string
   slug: string
   excerpt: string
-  content: string       // raw markdown (devto/hashnode) or sanitized HTML (medium)
-  contentFormat: 'markdown' | 'html'  // tells PostBody which renderer to use
+  content?: string      // full body; present for server-side post rendering
+  contentFormat: 'markdown' | 'html'
   coverImage: string | null
   publishedAt: string   // ISO 8601
   tags: string[]
-  source: PostSource    // primary source (earliest publish for cross-posts)
+  source: PostSource    // Hashnode is preferred when a cross-post is available
   alsoOn: PostSource[]  // other platforms this post was cross-posted to
   originalUrl: string   // canonical href — always link back
-  isPaywalled: boolean  // Medium only; truncates content if true
+  isPaywalled: boolean
 }
 ```
 
-`PostBody` renders by `contentFormat`: markdown via `react-markdown` +
-`rehype-highlight` (a React component — markdown stays raw in the data layer);
-HTML (Medium, already sanitized in the loader) via `dangerouslySetInnerHTML`.
+`sanitizePostContent` sanitizes HTML before it is rendered on an on-site post
+page. `hasOnSitePage` requires a non-empty Hashnode HTML body and excludes
+paywalled posts; all other cards link to `originalUrl`.
 
 ### Source loaders (`src/lib/sources/`)
 - **devto.ts** — `https://dev.to/api/articles?username={DEVTO_USERNAME}&per_page=100`;
   full body via `GET /api/articles/{id}` (`body_markdown`). No key. Render markdown.
-- **hashnode.ts** — GraphQL `https://gql.hashnode.com`, publication posts by
-  `host: {HASHNODE_HOST}`; full text `post.content.markdown`. No key. Render markdown.
+- **hashnode.ts** — RSS `https://{HASHNODE_HOST}/rss.xml`; body `content:encoded`.
+  No key. Render sanitized HTML on the on-site route when available.
 - **medium.ts** — RSS `https://medium.com/feed/{MEDIUM_USERNAME}`; parse with
   `fast-xml-parser`; body `content:encoded`. Sanitize with `sanitize-html`
   (allowlist: `p, a, strong, em, h1–h6, ul, ol, li, blockquote, pre, code, img,
@@ -132,20 +134,20 @@ HTML (Medium, already sanitized in the loader) via `dangerouslySetInnerHTML`.
 
 ### Aggregation (`src/lib/aggregate.ts`)
 ```ts
-import { cache } from 'react'
-
-export const getAllPosts = cache(async (): Promise<Post[]> => {
+const postsPromise = (async (): Promise<Post[]> => {
   const results = await Promise.allSettled([fetchDevto(), fetchHashnode(), fetchMedium()])
   const posts = results
     .filter(r => r.status === 'fulfilled')
     .flatMap(r => (r as PromiseFulfilledResult<Post[]>).value)
   return dedupeAndSort(posts)
 })
+
+export const getAllPosts = () => postsPromise
 ```
 - `Promise.allSettled` — one platform down must not crash the page.
-- Dedupe cross-posts by normalized title slug: keep the earliest `publishedAt`
-  as the primary (`source`), record the other platforms in `alsoOn` so the UI
-  can show every source badge.
+- Dedupe cross-posts by normalized title slug: prefer the Hashnode copy as the
+  primary (`source`) when present, preserve the earliest `publishedAt`, and
+  record the other platforms in `alsoOn`.
 - Sort by `publishedAt` desc.
 
 ---
@@ -193,15 +195,14 @@ Reference mockup (static, placeholder content): the approved Artifact demo.
 
 ---
 
-## Rendering / Freshness Strategy (Approach 1: ISR static)
+## Rendering / Freshness Strategy (Static Export)
 
 | Platform | Strategy |
 |---|---|
-| dev.to | ISR 6h + optional webhook → `/api/revalidate` |
-| Hashnode | ISR 6h + optional webhook → `/api/revalidate` |
-| Medium | ISR 6h only (no webhooks) |
+| Hashnode | static export at build time |
+| Medium | static export at build time |
 
-`export const revalidate = 21600` on blog index and post pages.
+Home, blog, post, and sitemap routes use `dynamic = 'force-static'`.
 
 ---
 
@@ -209,7 +210,7 @@ Reference mockup (static, placeholder content): the approved Artifact demo.
 
 - `generateMetadata` on every route.
 - `alternates.canonical = post.originalUrl` on all blog post pages.
-- `app/sitemap.ts` (static + blog + post routes), `app/robots.ts`.
+- `app/sitemap.ts` (static + blog + on-site post routes), `app/robots.ts`.
 - `app/opengraph-image.tsx` + per-post dynamic OG via `ImageResponse`.
 - `next/font` for zero layout shift (or system stack — no webfont CDN needed).
 
@@ -256,7 +257,8 @@ Vercel dashboard. Push to `main` deploys; PRs get preview URLs.
 ## Testing
 
 - Unit: each source loader (mocked HTTP) → correct normalized `Post[]`.
-- Unit: `dedupeAndSort` — cross-post dedupe keeps earliest, merges badges, sorts desc.
+- Unit: `dedupeAndSort` — Hashnode wins cross-post primacy while the earliest
+  date is preserved, badges merge, and results sort desc.
 - Unit: Medium sanitize — strips tracking pixels, enforces tag allowlist, paywall detection.
 - Build check: `generateStaticParams` produces routes for all posts.
 - Lighthouse ≥ 90 (performance, a11y, best-practices, SEO) on `/`, `/blog`, a post, `/resume`.
