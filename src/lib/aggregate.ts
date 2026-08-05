@@ -1,4 +1,3 @@
-import { cache } from 'react'
 import type { Post } from './types'
 import { fetchHashnode } from './sources/hashnode'
 import { fetchMedium } from './sources/medium'
@@ -41,4 +40,12 @@ export async function combinePosts(): Promise<Post[]> {
   return dedupeAndSort(posts)
 }
 
-export const getAllPosts = cache(combinePosts)
+// Resolve the feed once per build process. Static export renders several
+// independent prerender scopes (generateStaticParams, generateMetadata, page
+// render) that do NOT share React's per-request cache(), so a module-scoped
+// promise is what keeps every consumer on the exact same snapshot and avoids
+// re-fetching the RSS endpoints for each scope. All pages are force-static,
+// so dev and production builds both want this.
+const postsPromise = combinePosts()
+
+export const getAllPosts = () => postsPromise
