@@ -14,7 +14,7 @@ const post: Post = {
 const paywalled: Post = {
   ...post,
   id: 'medium-pw', slug: 'paywalled', source: 'medium',
-  content: '<p>members only</p>', originalUrl: 'https://medium.com/@x/paywalled', isPaywalled: true,
+  content: undefined, originalUrl: 'https://medium.com/@x/paywalled', isPaywalled: true,
 }
 
 vi.mock('@/lib/aggregate', () => ({
@@ -51,9 +51,20 @@ describe('PostPage', () => {
     expect(meta.alternates?.canonical).toBe(post.originalUrl)
   })
 
-  it('does not generate an on-site page for a paywalled post', async () => {
+  it('generates an internal page for paywalled posts', async () => {
     const { generateStaticParams } = await import('./page')
     const slugs = await generateStaticParams()
-    expect(slugs.map((entry) => entry.slug)).not.toContain('paywalled')
+    expect(slugs.map((entry) => entry.slug)).toContain('paywalled')
+  })
+
+  it('renders available metadata when a post has no local body', async () => {
+    const { default: PostPage } = await import('./page')
+    const ui = await PostPage({
+      params: Promise.resolve({ slug: 'paywalled' }),
+    })
+    render(ui)
+
+    expect(screen.getByRole('heading', { level: 1, name: paywalled.title })).toBeTruthy()
+    expect(screen.getByText(paywalled.excerpt)).toBeTruthy()
   })
 })

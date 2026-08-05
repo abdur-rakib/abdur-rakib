@@ -22,7 +22,7 @@ describe('sitemap', () => {
     vi.unstubAllEnvs()
   })
 
-  it('lists static routes and on-site post URLs, skipping link-out posts', async () => {
+  it('lists static routes for every supported post', async () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://example.com')
     vi.resetModules()
     const { default: sitemap } = await import('./sitemap')
@@ -31,6 +31,7 @@ describe('sitemap', () => {
       { url: 'https://example.com' },
       { url: 'https://example.com/blog/' },
       { url: 'https://example.com/blog/on-site-post/' },
+      { url: 'https://example.com/blog/paywalled-post/' },
     ])
   })
 })
