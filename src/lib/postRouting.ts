@@ -6,7 +6,7 @@ import type { Post } from './types'
  * truncated sources (e.g. Medium members-only stories) stay link-out.
  */
 export function hasOnSitePage(post: Post): boolean {
-  return Boolean(post.content) && post.contentFormat === 'html' && !post.isPaywalled
+  return post.source === 'hashnode' && Boolean(post.content) && post.contentFormat === 'html' && !post.isPaywalled
 }
 
 /**
